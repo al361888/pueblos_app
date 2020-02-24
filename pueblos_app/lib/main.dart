@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/app/app.dart';
+import 'app.dart';
 
-//Punto de entrada para su aplicación
-void main() => runApp(BasicApp());
+void main() => runApp(App());
