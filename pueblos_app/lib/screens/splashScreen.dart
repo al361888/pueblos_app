@@ -1,4 +1,4 @@
-import 'dart:async';
+/* import 'dart:async';
 import 'package:pueblos_app/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if(mounted){
       Navigator.of(context).pushReplacement(LoginScreen.route());
     }
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -71,3 +71,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+ */

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/components/proclamationsContainer.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,7 +10,7 @@ class _HomeScreen extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
-    Text('Aquí van los bandos'), //Una clase nueva
+    proclamationsContainer(), //Una clase nueva
     Text('Aquí van las noticias'), //Una clase nueva
     Text('Aquí van los eventos') //Una clase nueva
   ];
@@ -24,10 +25,15 @@ class _HomeScreen extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         leading: Icon(Icons.verified_user), //Icono del pueblo
         title: Text('Nombre del pueblo'), //Nombre del pueblo
-        actions: <Widget>[Icon(Icons.face)], //Foto de perfil del usuario
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.face), //Foto de perfil del usuario
+              onPressed: () {
+                _settingModalBottomSheet(context);
+              })
+        ],
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
@@ -44,4 +50,65 @@ class _HomeScreen extends State<HomeScreen> {
       ),
     );
   }
+}
+
+//Construcción del modal que surge cuando tocamos la foto de perfil del usuario
+void _settingModalBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+            height: 350,
+            child: Column(children: [
+              Container(
+                  height: 100,
+                  padding: EdgeInsets.all(14.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Icon(Icons.face), //Foto de perfil
+                      Padding(
+                          padding: EdgeInsets.all(18.0),//Espacio entre la imagen y el nombre de usuario
+                          child: Row(
+                            children: <Widget>[
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Username",
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    Text("(Correo@gmail.com)",
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontStyle: FontStyle.italic))
+                                  ])
+                            ],
+                          ))
+                    ],
+                  ),
+                  alignment: Alignment.centerLeft),
+              Divider(thickness: 1),
+              Wrap(
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.portrait),
+                    title: Text("Mi Perfil"),
+                    onTap: () => {},
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.monetization_on),
+                    title: Text("Mis Inscripciones"),
+                    onTap: () => {},
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.inbox),
+                    title: Text("Mis Facturas"),
+                    onTap: () => {},
+                  )
+                ],
+              )
+            ]));
+      });
 }
