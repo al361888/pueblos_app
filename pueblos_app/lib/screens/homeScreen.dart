@@ -25,59 +25,50 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget icono;
-
-    if (_selectedIndex == 0) {
-      icono = Icon(Icons.navigation);
-    } else if (_selectedIndex == 1) {
-      icono = Icon(Icons.network_cell);
-    } else {
-      icono = Icon(Icons.nfc);
-    }
-
     var floatingActionButton2 = FloatingActionButton(
       onPressed: () {
         if (_selectedIndex == 0) {
           //Bandos
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddProclamationScreen()));
-                  } else if (_selectedIndex == 1) {
-                    //Noticias
-                  } else {
-                    //Eventos
-                  }
-                },
-                child: icono,
-                backgroundColor: Colors.green,
-              );
-              return Scaffold(
-                appBar: AppBar(
-                  leading: Icon(Icons.verified_user), //Icono del pueblo
-                  title: Text('Nombre del pueblo'), //Nombre del pueblo
-                  actions: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.face), //Foto de perfil del usuario
-                        onPressed: () {
-                          _settingModalBottomSheet(context);
-                        })
-                  ],
-                ),
-                body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-                floatingActionButton: floatingActionButton2,
-                bottomNavigationBar: BottomNavigationBar(
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.queue_play_next), title: Text('Bandos')),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.receipt), title: Text('Noticias')),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.event), title: Text('Eventos')),
-                  ],
-                  currentIndex: _selectedIndex,
-                  onTap: _onItemTapped,
-                ),
-              );
-            }
-          }
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddProclamationScreen()));
+        } else if (_selectedIndex == 1) {
+          //Noticias
+        } else {
+          //Eventos
+        }
+      },
+      child: Icon(Icons.add),
+      backgroundColor: Colors.green,
+    );
+    return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.verified_user), //Icono del pueblo
+        title: Text('Nombre del pueblo'), //Nombre del pueblo
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.face), //Foto de perfil del usuario
+              onPressed: () {
+                _settingModalBottomSheet(context);
+              })
+        ],
+      ),
+      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      floatingActionButton: floatingActionButton2,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.queue_play_next), title: Text('Bandos')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.receipt), title: Text('Noticias')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.event), title: Text('Eventos')),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
 
 //Construcción del modal que surge cuando tocamos la foto de perfil del usuario
 void _settingModalBottomSheet(BuildContext context) {

@@ -44,7 +44,7 @@ class NewProclamationFormState extends State<NewProclamationForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("Título del bando:"),
+            Text("Título:"),
             TextFormField(
               // The validator receives the text that the user has entered.
               validator: (value) {
@@ -54,6 +54,19 @@ class NewProclamationFormState extends State<NewProclamationForm> {
                 return null;
               },
             ),
+            Text("Descripción:"),
+            TextFormField(
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Introduce una descripción del bando.';
+                }
+                return null;
+              },
+            ),
+            Text("Comunidad:"),
+            DropdownButtonFormField(items: null, 
+            onChanged: null),
             RaisedButton(
               onPressed: () {
                 // Validate returns true if the form is valid, otherwise false.
