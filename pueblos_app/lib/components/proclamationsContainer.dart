@@ -10,7 +10,7 @@ class _proclamationContainer extends State<proclamationsContainer>{
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ProclamationCard()
+      child: ProclamationCard(),
     );
   }
 }
