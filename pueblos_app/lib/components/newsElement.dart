@@ -21,8 +21,9 @@ class _NewsElementState extends State<NewsElement> {
           },
           child: Container(
               padding: EdgeInsets.all(15),
-              color: Colors.yellow,
+              color: Colors.yellow[200],
               child: Row(
+
                 children: <Widget>[
                   Image.asset("assets/images/landscape.jpg",
                       width: 100, height: 100),
@@ -30,11 +31,14 @@ class _NewsElementState extends State<NewsElement> {
                   Column(
                     children: <Widget>[
                       Padding(padding: EdgeInsets.only(top: 10)),
-                      Text(
-                        "Hemos ido a este pueblo y no te creerás lo que pasa al final. ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                        textAlign: TextAlign.justify,
+                      Expanded(
+                        child: Text(
+                          "Hemos ido a este pueblo y no te creerás lo que pasa al final. ",
+                          maxLines: 3,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                          textAlign: TextAlign.justify,
+                        ),
                       ),
                       Container(
                         alignment: Alignment.centerRight,

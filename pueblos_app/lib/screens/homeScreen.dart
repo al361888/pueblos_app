@@ -3,6 +3,7 @@ import 'package:pueblos_app/components/newsContainer.dart';
 import 'package:pueblos_app/components/proclamationsContainer.dart';
 import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:pueblos_app/screens/loginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,6 +12,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreen extends State<HomeScreen> {
   int _selectedIndex = 0;
+  String _user = "";
+  String _email = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  //Carga el usuario que ha iniciado sesion
+  _loadUser() async {
+    SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      _user = (userPrefs.getString('user') ?? 'Username');
+      _email = (userPrefs.getString('email') ?? 'email@email.com');
+    });
+  } 
 
   final List<Widget> _widgetOptions = <Widget>[
     proclamationsContainer(), //Una clase nueva
@@ -69,69 +87,74 @@ class _HomeScreen extends State<HomeScreen> {
       ),
     );
   }
-}
 
-//Construcción del modal que surge cuando tocamos la foto de perfil del usuario
-void _settingModalBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return Container(
-            child: Column(children: [
-          Container(
-              padding: EdgeInsets.all(14.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(Icons.face), //Foto de perfil
-                  Padding(
-                      padding: EdgeInsets.all(
-                          18.0), //Espacio entre la imagen y el nombre de usuario
-                      child: Row(
-                        children: <Widget>[
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Username",
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text("(Correo@gmail.com)",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontStyle: FontStyle.italic))
-                              ])
-                        ],
-                      ))
-                ],
-              ),
-              alignment: Alignment.centerLeft),
-          Divider(thickness: 1),
-          Wrap(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.portrait),
-                title: Text("Mi Perfil"),
-                onTap: () => {},
-              ),
-              ListTile(
-                leading: Icon(Icons.monetization_on),
-                title: Text("Mis Inscripciones"),
-                onTap: () => {},
-              ),
-              ListTile(
-                leading: Icon(Icons.inbox),
-                title: Text("Mis Facturas"),
-                onTap: () => {},
-              ),
-              ListTile(
-                leading: Icon(Icons.close),
-                title: Text("Cerrar sesión"),
-                onTap: () => {},
-              )
-            ],
-          )
-        ]));
-      });
+  //Construcción del modal que surge cuando tocamos la foto de perfil del usuario
+  void _settingModalBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+              child: Column(children: [
+            Container(
+                padding: EdgeInsets.all(14.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.face), //Foto de perfil
+                    Padding(
+                        padding: EdgeInsets.all(
+                            18.0), //Espacio entre la imagen y el nombre de usuario
+                        child: Row(
+                          children: <Widget>[
+                            Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _user,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  Text(_email,
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontStyle: FontStyle.italic))
+                                ])
+                          ],
+                        ))
+                  ],
+                ),
+                alignment: Alignment.centerLeft),
+            Divider(thickness: 1),
+            Wrap(
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.portrait),
+                  title: Text("Mi Perfil"),
+                  onTap: () => {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.monetization_on),
+                  title: Text("Mis Inscripciones"),
+                  onTap: () => {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.inbox),
+                  title: Text("Mis Facturas"),
+                  onTap: () => {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.close),
+                  title: Text("Cerrar sesión"),
+                  onTap: () => {
+                    _user = "",
+                    _email = "",
+                    Navigator.push(context,
+              MaterialPageRoute(builder: (context) => LoginScreen()))
+                  },
+                )
+              ],
+            )
+          ]));
+        });
+  }
 }

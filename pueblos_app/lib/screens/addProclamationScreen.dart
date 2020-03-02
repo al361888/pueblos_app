@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/screens/homeScreen.dart';
 
 class AddProclamationScreen extends StatefulWidget {
   @override
@@ -63,7 +64,7 @@ class NewProclamationFormState extends State<NewProclamationForm> {
                   }
                   return null;
                 },
-                onSaved: (String value) {
+                onChanged: (String value) {
                   this._data.title = value;
                 }),
             Padding(padding: EdgeInsets.only(top: 30)),
@@ -83,7 +84,7 @@ class NewProclamationFormState extends State<NewProclamationForm> {
                 }
                 return null;
               },
-              onSaved: (String value) {
+              onChanged: (String value) {
                 this._data.description = value;
               },
             ),
@@ -131,7 +132,9 @@ class NewProclamationFormState extends State<NewProclamationForm> {
   }
 
   void submit() {
+    print(_data.title);
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('Processing Data')));
+        Navigator.pop(context);
   }
 }

@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/homeScreen.dart';
+import 'package:pueblos_app/authService.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginScreenState();
 }
 
+class _UserData {
+  String email = "";
+  String pass = "";
+}
+
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey1 = GlobalKey<FormState>();
+  _UserData _userData = _UserData();
   bool _logged = false;
 
-  _onPressed() {
-    HomeScreen();
+  _onPressed() async {
+    AuthService authService = AuthService();
+    print("Email: " + _userData.email);
+    await authService.login(_userData.email, _userData.pass).then((result){
+      _logged = result;
+    });
+    if(_logged){
+      Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
   }
 
   @override
@@ -46,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               new Container(
                 padding: const EdgeInsets.all(40.0),
                 child: new Form(
+                  key: _formKey1,
                   autovalidate: true,
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -53,7 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       new TextFormField(
                         decoration: new InputDecoration(
                             labelText: "Enter Email", fillColor: Colors.white),
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.text,
+                        onChanged: (String value){
+                          print("hola " + value);
+                          this._userData.email = value;
+                        },
                       ),
                       new TextFormField(
                         decoration: new InputDecoration(
@@ -61,6 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         obscureText: true,
                         keyboardType: TextInputType.text,
+                        onChanged: (String value){
+                          this._userData.pass = value;
+                        }
                       ),
                       new Padding(
                         padding: const EdgeInsets.only(top: 60.0),
@@ -71,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.green,
                         splashColor: Colors.teal,
                         textColor: Colors.white,
-                        child: new Icon(Icons.check),
+                        child: new Icon(Icons.arrow_forward),
                         onPressed: _onPressed,
                       )
                     ],

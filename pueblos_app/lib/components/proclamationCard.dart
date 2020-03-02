@@ -102,7 +102,7 @@ String calculateTimeDiff() {
   if (diff.inDays == 1) {
     return "Hace " + diff.inDays.toString() + " día";
   } else if (diff.inDays > 1) {
-    return "Hace " + diff.inDays.toString() + " día";
+    return "Hace " + diff.inDays.toString() + " días";
   } else if (diff.inHours == 1) {
     return "Hace " + diff.inHours.toString() + " hora";
   } else if (diff.inHours > 1) {
