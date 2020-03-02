@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
-class ProclamationCard extends StatelessWidget {
-  var horaSalida = DateTime(2020, 2, 26, 9, 0, 0, 0, 0);
+class ProclamationCard extends StatefulWidget {
+  @override
+  _ProclamationCardState createState() => _ProclamationCardState();
+}
+
+class _ProclamationCardState extends State<ProclamationCard> {
+  String tiempoTarjeta = calculateTimeDiff();
+
+  Image escudoComunidad; 
+  Text titulo; 
+  Text descripcion; 
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +29,10 @@ class ProclamationCard extends StatelessWidget {
                     Image.asset("assets/images/escudo.png",
                         width: 60, height: 60),
                     Padding(padding: EdgeInsets.all(10.0)),
-                    Text("Ha venido el afilador", textAlign: TextAlign.center,),
+                    Text(
+                      "Ha venido el afilador",
+                      textAlign: TextAlign.center,
+                    ),
                   ]),
                   content: SingleChildScrollView(
                     child: ListBody(
@@ -48,40 +60,54 @@ class ProclamationCard extends StatelessWidget {
               //Aqui empieza el codigo de apariencia de la carta
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
+                Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(top:15, left:15, right: 15),
+                    padding: EdgeInsets.only(top: 15, left: 15, right: 15),
                     child: Image.asset("assets/images/escudo.png",
                         width: 40, height: 40),
                   ),
                   Flexible(
                     child: Container(
-                      padding: EdgeInsets.only(top:20, right: 20),
-                    child: Text("El carnicero se ha cortado la mano con la chopetera.",
-                        style: TextStyle(fontWeight: FontWeight.w500,
-                        fontSize: 18)),
-                  ),)
+                      padding: EdgeInsets.only(top: 20, right: 20),
+                      child: Text(
+                          "El carnicero se ha cortado la mano con la chopetera.",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18)),
+                    ),
+                  )
                 ]),
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(right: 20),
                   child: Chip(
-                      //Fecha de salida
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      backgroundColor: Colors.white,
-                      label: Text("Hace " +
-                          DateTime.now()
-                              .difference(horaSalida)
-                              .inMinutes
-                              .toString() +
-                          " min", style: TextStyle(fontStyle: FontStyle.italic),),
+                    //Fecha de salida
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    backgroundColor: Colors.white,
+                    label: Text(
+                      tiempoTarjeta,
+                      style: TextStyle(fontStyle: FontStyle.italic),
                     ),
+                  ),
                 )
               ]),
         ),
       ),
     );
+  }
+}
+
+String calculateTimeDiff() {
+  var horaSalida = DateTime(2020, 2, 27, 10, 40, 0, 0, 0); //Coger de la bbdd
+  Duration diff = DateTime.now().difference(horaSalida);
+  if (diff.inDays == 1) {
+    return "Hace " + diff.inDays.toString() + " día";
+  } else if (diff.inDays > 1) {
+    return "Hace " + diff.inDays.toString() + " día";
+  } else if (diff.inHours == 1) {
+    return "Hace " + diff.inHours.toString() + " hora";
+  } else if (diff.inHours > 1) {
+    return "Hace " + diff.inHours.toString() + " horas";
+  } else {
+    return "Hace " + diff.inMinutes.toString() + " minutos";
   }
 }
