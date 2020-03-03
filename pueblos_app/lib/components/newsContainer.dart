@@ -12,7 +12,22 @@ class _NewsContainerState extends State<NewsContainer> {
     return Container(
       child: Column(
         children: <Widget>[
-          NewsElement()
+          Padding(padding: EdgeInsets.only(top: 10)),
+          Expanded(
+            child: ListView(
+              children: <Widget>[
+                NewsElement(),
+            NewsElement(),
+            NewsElement(),
+            NewsElement(),
+            NewsElement(),
+            NewsElement(),
+            NewsElement(),
+            NewsElement()
+              ],
+            ),
+          ),
+          
         ],
       ),
     );

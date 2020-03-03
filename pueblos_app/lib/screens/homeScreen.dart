@@ -57,10 +57,11 @@ class _HomeScreen extends State<HomeScreen> {
         }
       },
       child: Icon(Icons.add),
-      backgroundColor: Colors.green,
+      backgroundColor: Color(0xFF29BF79),
     );
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: Icon(Icons.verified_user), //Icono del pueblo
         title: Text('Nombre del pueblo'), //Nombre del pueblo
         actions: <Widget>[

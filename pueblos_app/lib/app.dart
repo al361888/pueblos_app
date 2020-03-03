@@ -20,7 +20,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light(),
+      theme: ThemeData(
+        primaryColor: Color(0xFF29BF79)
+        ),
       home: LoginScreen(),
     );
   }

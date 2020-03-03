@@ -8,11 +8,13 @@ class NewsElement extends StatefulWidget {
 
 class _NewsElementState extends State<NewsElement> {
   String tiempoNoticia = calculateTimeDiff();
+  String image;
+  String id;
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: 'news',
+      tag: 'news$id',
       child: GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -21,40 +23,37 @@ class _NewsElementState extends State<NewsElement> {
           },
           child: Container(
               padding: EdgeInsets.all(15),
-              color: Colors.yellow[200],
               child: Row(
-
                 children: <Widget>[
                   Image.asset("assets/images/landscape.jpg",
-                      width: 100, height: 100),
-                  Padding(padding: EdgeInsets.only(left: 10)),
+                      width: 150, height: 125),
+                  Padding(padding: EdgeInsets.only(left: 20)),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Padding(padding: EdgeInsets.only(top: 10)),
-                      Expanded(
-                        child: Text(
-                          "Hemos ido a este pueblo y no te creerás lo que pasa al final. ",
-                          maxLines: 3,
+                    Container(
+                      width: 200,
+
+                      child: Text(
+                          "El increíble suceso que no te esperas pero que pasó (o almenos eso creemos pero no nos hemos informado bastante, esto es simplemente un clickbait)",
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 18),
+                              fontWeight: FontWeight.w500, fontSize: 16),
+                          maxLines: 3,
                           textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                    Container(
+                      child: Chip(
+                        //Fecha de salida
+                        backgroundColor: Colors.grey[300],
+                        label: Text(
+                          tiempoNoticia,
+                          style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
-                      Container(
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 20),
-                        child: Chip(
-                          //Fecha de salida
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          backgroundColor: Colors.white,
-                          label: Text(
-                            tiempoNoticia,
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
-                        ),
-                      )
-                    ],
-                  )
+                    )
+                  ]),
                 ],
               ))),
     );
@@ -62,16 +61,58 @@ class _NewsElementState extends State<NewsElement> {
 }
 
 class DetailedNewsItem extends StatelessWidget {
+  String loremIpsum =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat arcu luctus augue hendrerit consequat. Aliquam non faucibus neque. Vestibulum condimentum nibh vel elit pellentesque, sit amet elementum ante semper. Quisque tristique turpis ac nulla lobortis, in cursus tellus porttitor. \n\nDuis sagittis tortor ex, a ullamcorper nunc imperdiet vitae. Maecenas facilisis efficitur faucibus. Nunc sit amet risus venenatis, placerat est facilisis, porta augue. Ut nec ligula at dui volutpat porttitor et vel mi. Sed nulla justo, interdum rutrum enim sed, tristique scelerisque sem. Quisque lacus augue, volutpat non pulvinar id, faucibus ac erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin ultricies fringilla faucibus.\n\n Pellentesque non vestibulum lorem. Integer sollicitudin dolor ac ultrices congue. Vivamus elementum gravida diam a interdum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. ";
+  String title =
+      "El increíble suceso que no te esperas pero que pasó (o almenos eso creemos pero no nos hemos informado bastante, esto es simplemente un clickbait)";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: GestureDetector(
             child: Center(
-                child: Hero(
-                    tag: "news",
-                    child: Image.asset("assets/images/landscape.jpg"))),
+                child: Column(
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    Hero(
+                        tag: "news",
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset("assets/images/landscape.jpg"))),
+                    Positioned(
+                      top: 100,
+                      left: 10,
+                      height: 120,
+                      width: 400,
+                      child: Container(
+                        //color: Colors.purple[100],
+                          child: Text(title,
+                          textAlign: TextAlign.justify,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500)),
+                          ),
+                    ),
+                  ],
+                ),
+                //Padding(padding: EdgeInsets.only(top: 1)),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        loremIpsum + loremIpsum,
+                        style: TextStyle(fontSize: 17, color: Colors.grey[800]
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
             onTap: () {
-          Navigator.pop(context);
-        }));
+              Navigator.pop(context);
+            }));
   }
 }
