@@ -10,7 +10,7 @@ class _AddProclamationScreenState extends State<AddProclamationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Crear nuevo bando")),
+      appBar: AppBar(title: Text("Crear nuevo bando", style: TextStyle(color: Colors.white),)),
       body: Container(
         padding: EdgeInsets.all(20),
         child: NewProclamationForm(),
@@ -124,7 +124,7 @@ class NewProclamationFormState extends State<NewProclamationForm> {
                 }
               },
               child: Text('CREAR'),
-              color: Colors.green,
+              color: Color(0xFF29BF79),
               textColor: Colors.white,
             )
           ],

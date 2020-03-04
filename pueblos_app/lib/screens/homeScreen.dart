@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/authService.dart';
 import 'package:pueblos_app/components/newsContainer.dart';
 import 'package:pueblos_app/components/proclamationsContainer.dart';
 import 'package:pueblos_app/screens/addProclamationScreen.dart';
@@ -14,6 +15,9 @@ class _HomeScreen extends State<HomeScreen> {
   int _selectedIndex = 0;
   String _user = "";
   String _email = "";
+  String _activeVillageName="";
+  String _activeVillageDomain="";
+  String _activeVillageId="";
 
   @override
   void initState() {
@@ -27,6 +31,11 @@ class _HomeScreen extends State<HomeScreen> {
     setState(() {
       _user = (userPrefs.getString('user') ?? 'Username');
       _email = (userPrefs.getString('email') ?? 'email@email.com');
+
+      _activeVillageName = userPrefs.getString('activeName');
+      _activeVillageDomain = userPrefs.getString('activeDomain');
+
+      print(_activeVillageName);
     });
   } 
 
@@ -63,7 +72,7 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Icon(Icons.verified_user), //Icono del pueblo
-        title: Text('Nombre del pueblo'), //Nombre del pueblo
+        title: Text(_activeVillageName), //Nombre del pueblo
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.face), //Foto de perfil del usuario
@@ -149,6 +158,7 @@ class _HomeScreen extends State<HomeScreen> {
                   onTap: () => {
                     _user = "",
                     _email = "",
+                    AuthService().logout(),
                     Navigator.push(context,
               MaterialPageRoute(builder: (context) => LoginScreen()))
                   },

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:pueblos_app/components/proclamationCard.dart';
 
 class NewsElement extends StatefulWidget {
   int id;
 
-  NewsElement(int i){
+  NewsElement(int i) {
     this.id = i;
   }
 
@@ -72,59 +73,63 @@ class DetailedNewsItem extends StatelessWidget {
       "El increíble suceso que no te esperas pero que pasó (o almenos eso creemos pero no nos hemos informado bastante, esto es simplemente un clickbait)";
 
   int id;
-  
-  DetailedNewsItem(int id){
+
+  DetailedNewsItem(int id) {
     this.id = id;
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GestureDetector(
-            child: Center(
-                child: Column(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Hero(
-                        tag: 'news$id',
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset("assets/images/landscape.jpg"))),
-                    Positioned(
-                      top: 100,
-                      left: 10,
-                      height: 120,
-                      width: 400,
-                      child: Container(
-                        //color: Colors.purple[100],
-                        child: Text(title,
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500)),
-                      ),
-                    ),
-                  ],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(255, 255, 255, 0.8),
+        title: Text("Volver a noticias"),
+      ),
+      body: Center(
+          child: Column(
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Hero(
+                  tag: 'news$id',
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset("assets/images/landscape.jpg"))),
+              Positioned(
+                top: 100,
+                left: 10,
+                height: 120,
+                width: 400,
+                child: Container(
+                  //color: Colors.purple[100],
+                  child: SelectableText(title,
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500)),
                 ),
-                //Padding(padding: EdgeInsets.only(top: 1)),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                    child: SingleChildScrollView(
-                      child: Text(
-                        loremIpsum + loremIpsum,
-                        style: TextStyle(fontSize: 17, color: Colors.grey[800]),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-            onTap: () {
-              Navigator.pop(context);
-            }));
+              ),
+            ],
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: SingleChildScrollView(child: Html(data: loremIpsum * 4)),
+            ),
+          ),
+        ],
+      )),
+    );
   }
 }
+
+/* Scaffold(backgroundColor: Colors.transparent,
+                  appBar: AppBar(backgroundColor: Colors.transparent),
+                  body: Container(
+                    color: Colors.transparent,
+                  ),
+                  extendBodyBehindAppBar: true,
+                  extendBody: true,
+                ) */
