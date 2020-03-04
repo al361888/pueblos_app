@@ -16,14 +16,14 @@ class _NewsContainerState extends State<NewsContainer> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                NewsElement(),
-            NewsElement(),
-            NewsElement(),
-            NewsElement(),
-            NewsElement(),
-            NewsElement(),
-            NewsElement(),
-            NewsElement()
+              NewsElement(0),
+            NewsElement(1),
+            NewsElement(2),
+            NewsElement(3),
+            NewsElement(4),
+            NewsElement(5),
+            NewsElement(6),
+            NewsElement(7)
               ],
             ),
           ),

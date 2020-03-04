@@ -2,23 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/proclamationCard.dart';
 
 class NewsElement extends StatefulWidget {
+  int id;
+
+  NewsElement(int i){
+    this.id = i;
+  }
+
   @override
   State<StatefulWidget> createState() => _NewsElementState();
 }
 
 class _NewsElementState extends State<NewsElement> {
   String tiempoNoticia = calculateTimeDiff();
-  String image;
-  String id;
 
   @override
   Widget build(BuildContext context) {
+    int id = widget.id;
+
     return Hero(
       tag: 'news$id',
       child: GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return DetailedNewsItem();
+              return DetailedNewsItem(id);
             }));
           },
           child: Container(
@@ -29,31 +35,30 @@ class _NewsElementState extends State<NewsElement> {
                       width: 150, height: 125),
                   Padding(padding: EdgeInsets.only(left: 20)),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                    Container(
-                      width: 200,
-
-                      child: Text(
-                          "El increíble suceso que no te esperas pero que pasó (o almenos eso creemos pero no nos hemos informado bastante, esto es simplemente un clickbait)",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 16),
-                          maxLines: 3,
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                    Container(
-                      child: Chip(
-                        //Fecha de salida
-                        backgroundColor: Colors.grey[300],
-                        label: Text(
-                          tiempoNoticia,
-                          style: TextStyle(fontStyle: FontStyle.italic),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          width: 200,
+                          child: Text(
+                              "El increíble suceso que no te esperas pero que pasó (o almenos eso creemos pero no nos hemos informado bastante, esto es simplemente un clickbait)",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16),
+                              maxLines: 3,
+                              textAlign: TextAlign.justify,
+                              overflow: TextOverflow.ellipsis),
                         ),
-                      ),
-                    )
-                  ]),
+                        Container(
+                          child: Chip(
+                            //Fecha de salida
+                            backgroundColor: Colors.grey[300],
+                            label: Text(
+                              tiempoNoticia,
+                              style: TextStyle(fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        )
+                      ]),
                 ],
               ))),
     );
@@ -65,6 +70,14 @@ class DetailedNewsItem extends StatelessWidget {
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat arcu luctus augue hendrerit consequat. Aliquam non faucibus neque. Vestibulum condimentum nibh vel elit pellentesque, sit amet elementum ante semper. Quisque tristique turpis ac nulla lobortis, in cursus tellus porttitor. \n\nDuis sagittis tortor ex, a ullamcorper nunc imperdiet vitae. Maecenas facilisis efficitur faucibus. Nunc sit amet risus venenatis, placerat est facilisis, porta augue. Ut nec ligula at dui volutpat porttitor et vel mi. Sed nulla justo, interdum rutrum enim sed, tristique scelerisque sem. Quisque lacus augue, volutpat non pulvinar id, faucibus ac erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin ultricies fringilla faucibus.\n\n Pellentesque non vestibulum lorem. Integer sollicitudin dolor ac ultrices congue. Vivamus elementum gravida diam a interdum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. ";
   String title =
       "El increíble suceso que no te esperas pero que pasó (o almenos eso creemos pero no nos hemos informado bastante, esto es simplemente un clickbait)";
+
+  int id;
+  
+  DetailedNewsItem(int id){
+    this.id = id;
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +88,7 @@ class DetailedNewsItem extends StatelessWidget {
                 Stack(
                   children: <Widget>[
                     Hero(
-                        tag: "news",
+                        tag: 'news$id',
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.asset("assets/images/landscape.jpg"))),
@@ -86,13 +99,13 @@ class DetailedNewsItem extends StatelessWidget {
                       width: 400,
                       child: Container(
                         //color: Colors.purple[100],
-                          child: Text(title,
-                          textAlign: TextAlign.justify,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500)),
-                          ),
+                        child: Text(title,
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500)),
+                      ),
                     ),
                   ],
                 ),
@@ -103,8 +116,7 @@ class DetailedNewsItem extends StatelessWidget {
                     child: SingleChildScrollView(
                       child: Text(
                         loremIpsum + loremIpsum,
-                        style: TextStyle(fontSize: 17, color: Colors.grey[800]
-                        ),
+                        style: TextStyle(fontSize: 17, color: Colors.grey[800]),
                       ),
                     ),
                   ),
