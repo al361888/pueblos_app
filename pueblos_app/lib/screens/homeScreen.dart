@@ -16,7 +16,6 @@ class _HomeScreen extends State<HomeScreen> {
   String _user = "";
   String _email = "";
   String _activeVillageName="";
-  String _activeVillageDomain="";
   String _activeVillageId="";
 
   @override
@@ -33,7 +32,6 @@ class _HomeScreen extends State<HomeScreen> {
       _email = (userPrefs.getString('email') ?? 'email@email.com');
 
       _activeVillageName = userPrefs.getString('activeName');
-      _activeVillageDomain = userPrefs.getString('activeDomain');
 
       print(_activeVillageName);
     });
@@ -70,7 +68,8 @@ class _HomeScreen extends State<HomeScreen> {
     );
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: Icon(Icons.verified_user), //Icono del pueblo
         title: Text(_activeVillageName), //Nombre del pueblo
         actions: <Widget>[

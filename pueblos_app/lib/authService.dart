@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'model/user.dart';
 
 class AuthService {
   // Login
@@ -18,7 +19,7 @@ class AuthService {
       final userPrefs = await SharedPreferences.getInstance();
 
       var convertToData = json.decode(uriResponse.body);
-      var user=Post.fromJson(convertToData);
+      var user=User.fromJson(convertToData);
 
       var email = user.email;
       var name = user.name;
@@ -27,6 +28,8 @@ class AuthService {
       var activeDomain = user.activeDomain;
 
       print(activeVillage);
+      print(activeName);
+      print(activeDomain);
 
       // set value
       userPrefs.setString('user', name);
@@ -54,27 +57,3 @@ class AuthService {
   }
 }
 
-class Post{
-  final String email;
-  final String name;
-  final villages;
-  final activeVillage;
-  final String activeName;
-  final String activeDomain;
-
-  Post({this.email, this.name, this.villages, this.activeVillage, this.activeName, this.activeDomain});
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    var villages=Map.from(json["data"]['villages']);
-    var activeVillage=(villages.values.toList().length>0)?villages.values.toList()[0]:null;
-
-    return Post(
-      email: json["data"]['email'],
-      name: json["data"]['name'],
-      villages: jsonEncode(villages),
-      activeVillage: activeVillage!=null?activeVillage[2]:null,
-      activeName: activeVillage!=null?activeVillage[0]:null,
-      activeDomain: activeVillage!=null?activeVillage[1]:null
-    );
-  }
-}
