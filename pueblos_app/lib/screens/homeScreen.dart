@@ -15,8 +15,8 @@ class _HomeScreen extends State<HomeScreen> {
   int _selectedIndex = 0;
   String _user = "";
   String _email = "";
-  String _activeVillageName="";
-  String _activeVillageId="";
+  String _activeVillageName = "";
+  String _activeVillageId = "";
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _HomeScreen extends State<HomeScreen> {
 
       print(_activeVillageName);
     });
-  } 
+  }
 
   final List<Widget> _widgetOptions = <Widget>[
     proclamationsContainer(), //Una clase nueva
@@ -67,6 +67,7 @@ class _HomeScreen extends State<HomeScreen> {
       backgroundColor: Color(0xFF29BF79),
     );
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -158,8 +159,8 @@ class _HomeScreen extends State<HomeScreen> {
                     _user = "",
                     _email = "",
                     AuthService().logout(),
-                    Navigator.push(context,
-              MaterialPageRoute(builder: (context) => LoginScreen()))
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/', (Route<dynamic> route) => false)
                   },
                 )
               ],

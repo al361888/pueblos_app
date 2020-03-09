@@ -5,6 +5,7 @@ import 'package:pueblos_app/apiCalls.dart';
 import "package:pueblos_app/components/newsElement.dart";
 import 'package:pueblos_app/model/news.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'imageNewsCard.dart';
 
 class NewsContainer extends StatefulWidget {
   @override
@@ -13,21 +14,24 @@ class NewsContainer extends StatefulWidget {
 
 class _NewsContainerState extends State<NewsContainer> {
   var news = List<News>();
+  bool isLoading = true;
 
-  String _domain= "";
+  String _domain = "";
 
   _getNews() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
-
     _domain = userPrefs.getString('activeDomain');
 
     ApiCalls(_domain).getNews().then((response) {
-      setState(() {
-        Iterable list = json.decode(response.body)['data'];
-        
-        news = list.map((model) => News.fromJson(model)).toList();
-        print(news.toString());
-      });
+      if (response.statusCode == 200) {
+        setState(() {
+          Iterable list = json.decode(response.body)['data'];
+          news = list.map((model) => News.fromJson(model)).toList();
+        });
+        isLoading = false;
+      } else {
+        _getNews();
+      }
     });
   }
 
@@ -42,22 +46,27 @@ class _NewsContainerState extends State<NewsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Padding(padding: EdgeInsets.only(top: 10)),
-          Expanded(
-            child: ListView.builder(
-                itemCount: news.length,
-                itemBuilder: (context, index) {
-                  print(_domain);
-                  return NewsElement(news[index].id, news[index].image, news[index].name );
-                }),
-          ),
-        ],
-      ),
-    );
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Container(
+          padding: EdgeInsets.all(15),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: news.length,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return ImageNewsCard(
+                              news[0].id, news[0].image, news[0].name, news[0].description, news[0].publishDate);
+                        } else {
+                          return NewsElement(news[index].id.toString(),
+                              news[index].image.toString(), news[index].name, news[index].description, news[index].publishDate);
+                        }
+                      }),
+                ),
+              ],
+            ),
+          );
   }
 }
-
-
