@@ -6,6 +6,8 @@ import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:pueblos_app/screens/loginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../pueblos_icons.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomeScreen();
@@ -66,6 +68,21 @@ class _HomeScreen extends State<HomeScreen> {
       child: Icon(Icons.add),
       backgroundColor: Color(0xFF29BF79),
     );
+    var floatingActionButton1 = FloatingActionButton(
+      onPressed: () {
+        if (_selectedIndex == 0) {
+          //Bandos
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddProclamationScreen()));
+        } else if (_selectedIndex == 1) {
+          //Noticias
+        } else {
+          //Eventos
+        }
+      },
+      child: Icon(Icons.add),
+      backgroundColor: Colors.red,
+    );
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -74,23 +91,26 @@ class _HomeScreen extends State<HomeScreen> {
         leading: Icon(Icons.verified_user), //Icono del pueblo
         title: Text(_activeVillageName), //Nombre del pueblo
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.face), //Foto de perfil del usuario
-              onPressed: () {
-                _settingModalBottomSheet(context);
-              })
+          GestureDetector(
+            onTap: () => _settingModalBottomSheet(context),
+            child:CircleAvatar(radius: 24,
+            child: ClipOval(
+              child: Image.network("https://eu.ui-avatars.com/api/?name="+_user)
+            ),),
+          ),
+          Padding(padding: EdgeInsets.only(right: 20))
         ],
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      floatingActionButton: floatingActionButton2,
+      floatingActionButton: _selectedIndex == 0 ? floatingActionButton2 : null,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.queue_play_next), title: Text('Bandos')),
+              icon: Icon(Pueblos.bullhorn), title: Text('Bandos')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.receipt), title: Text('Noticias')),
+              icon: Icon(Pueblos.newspaper), title: Text('Noticias')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.event), title: Text('Eventos')),
+              icon: Icon(Pueblos.calendar_full), title: Text('Eventos')),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -110,7 +130,10 @@ class _HomeScreen extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Icon(Icons.face), //Foto de perfil
+                    CircleAvatar(radius: 24,
+            child: ClipOval(
+              child: Image.network("https://eu.ui-avatars.com/api/?name="+_user)
+            ),),
                     Padding(
                         padding: EdgeInsets.all(
                             18.0), //Espacio entre la imagen y el nombre de usuario
@@ -143,7 +166,7 @@ class _HomeScreen extends State<HomeScreen> {
                   onTap: () => {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.monetization_on),
+                  leading: Icon(Pueblos.ticket),
                   title: Text("Mis Inscripciones"),
                   onTap: () => {},
                 ),

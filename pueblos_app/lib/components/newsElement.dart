@@ -128,10 +128,19 @@ class DetailedNewsItem extends StatelessWidget {
     this.image = image;
     this.title = name;
     this.description = description;
+    
     var aux = DateTime.parse(publishDate);
-    this.publishDate = aux.day.toString() +
+    String day=aux.day.toString();
+    String month=aux.month.toString();
+    if(aux.day<10){
+      day = "0"+day;
+    }
+    if(aux.month<10){
+      month = "0"+month;
+    }
+    this.publishDate = day +
         "/" +
-        aux.month.toString() +
+        month +
         "/" +
         aux.year.toString() +
         " " +

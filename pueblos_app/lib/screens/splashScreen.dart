@@ -1,4 +1,4 @@
-/* import 'dart:async';
+import 'dart:async';
 import 'package:pueblos_app/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _onShowLogin() {
     if(mounted){
-      Navigator.of(context).pushReplacement(LoginScreen.route());
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
     }
   } 
 
@@ -71,4 +71,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
- */
