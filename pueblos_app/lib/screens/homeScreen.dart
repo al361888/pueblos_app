@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/authService.dart';
+import 'package:pueblos_app/components/eventsContainer.dart';
 import 'package:pueblos_app/components/newsContainer.dart';
 import 'package:pueblos_app/components/proclamationsContainer.dart';
 import 'package:pueblos_app/screens/addProclamationScreen.dart';
@@ -39,10 +40,11 @@ class _HomeScreen extends State<HomeScreen> {
     });
   }
 
+  //Las opciones del BottomNavBar
   final List<Widget> _widgetOptions = <Widget>[
-    proclamationsContainer(), //Una clase nueva
-    NewsContainer(), //Una clase nueva
-    Text('Aquí van los eventos') //Una clase nueva
+    ProclamationsContainer(), //Container con la lista de bandos
+    NewsContainer(), //Container con la lista de noticias
+    EventsContainer() //Container con la lista de eventos
   ];
 
   void _onItemTapped(int index) {
@@ -53,36 +55,17 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var floatingActionButton2 = FloatingActionButton(
+    //Boton flotante para añadir un nuevo bando
+    var addButton = FloatingActionButton(
       onPressed: () {
-        if (_selectedIndex == 0) {
-          //Bandos
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddProclamationScreen()));
-        } else if (_selectedIndex == 1) {
-          //Noticias
-        } else {
-          //Eventos
-        }
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AddProclamationScreen()));
       },
       child: Icon(Icons.add),
       backgroundColor: Color(0xFF29BF79),
     );
-    var floatingActionButton1 = FloatingActionButton(
-      onPressed: () {
-        if (_selectedIndex == 0) {
-          //Bandos
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddProclamationScreen()));
-        } else if (_selectedIndex == 1) {
-          //Noticias
-        } else {
-          //Eventos
-        }
-      },
-      child: Icon(Icons.add),
-      backgroundColor: Colors.red,
-    );
+
+    //Construccion de la pantalla
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -93,16 +76,18 @@ class _HomeScreen extends State<HomeScreen> {
         actions: <Widget>[
           GestureDetector(
             onTap: () => _settingModalBottomSheet(context),
-            child:CircleAvatar(radius: 24,
-            child: ClipOval(
-              child: Image.network("https://eu.ui-avatars.com/api/?name="+_user)
-            ),),
+            child: CircleAvatar(
+              radius: 24,
+              child: ClipOval(
+                  child: Image.network(
+                      "https://eu.ui-avatars.com/api/?name=" + _user)),
+            ),
           ),
           Padding(padding: EdgeInsets.only(right: 20))
         ],
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      floatingActionButton: _selectedIndex == 0 ? floatingActionButton2 : null,
+      floatingActionButton: _selectedIndex == 0 ? addButton : null,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -130,10 +115,12 @@ class _HomeScreen extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    CircleAvatar(radius: 24,
-            child: ClipOval(
-              child: Image.network("https://eu.ui-avatars.com/api/?name="+_user)
-            ),),
+                    CircleAvatar(
+                      radius: 24,
+                      child: ClipOval(
+                          child: Image.network(
+                              "https://eu.ui-avatars.com/api/?name=" + _user)),
+                    ),
                     Padding(
                         padding: EdgeInsets.all(
                             18.0), //Espacio entre la imagen y el nombre de usuario

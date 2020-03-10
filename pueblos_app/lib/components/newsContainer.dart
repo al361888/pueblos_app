@@ -35,6 +35,7 @@ class _NewsContainerState extends State<NewsContainer> {
     });
   }
 
+  @override
   initState() {
     super.initState();
     _getNews();
@@ -49,7 +50,7 @@ class _NewsContainerState extends State<NewsContainer> {
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : Container(
-          padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -58,10 +59,18 @@ class _NewsContainerState extends State<NewsContainer> {
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return ImageNewsCard(
-                              news[0].id, news[0].image, news[0].name, news[0].description, news[0].publishDate);
+                              news[0].id,
+                              news[0].image,
+                              news[0].name,
+                              news[0].description,
+                              news[0].publishDate);
                         } else {
-                          return NewsElement(news[index].id.toString(),
-                              news[index].image.toString(), news[index].name, news[index].description, news[index].publishDate);
+                          return NewsElement(
+                              news[index].id.toString(),
+                              news[index].image.toString(),
+                              news[index].name,
+                              news[index].description,
+                              news[index].publishDate);
                         }
                       }),
                 ),

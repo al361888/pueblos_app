@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:pueblos_app/components/proclamationCard.dart';
 
 class NewsElement extends StatefulWidget {
   String id;
@@ -128,15 +127,15 @@ class DetailedNewsItem extends StatelessWidget {
     this.image = image;
     this.title = name;
     this.description = description;
-    
+
     var aux = DateTime.parse(publishDate);
-    String day=aux.day.toString();
-    String month=aux.month.toString();
-    if(aux.day<10){
-      day = "0"+day;
+    String day = aux.day.toString();
+    String month = aux.month.toString();
+    if (aux.day < 10) {
+      day = "0" + day;
     }
-    if(aux.month<10){
-      month = "0"+month;
+    if (aux.month < 10) {
+      month = "0" + month;
     }
     this.publishDate = day +
         "/" +

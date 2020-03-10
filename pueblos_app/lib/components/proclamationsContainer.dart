@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/proclamationCard.dart';
 
-class proclamationsContainer extends StatefulWidget{
+class ProclamationsContainer extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _proclamationContainer();
+  State<StatefulWidget> createState() => _ProclamationContainer();
 }
   
-class _proclamationContainer extends State<proclamationsContainer>{
+class _ProclamationContainer extends State<ProclamationsContainer>{
   @override
   Widget build(BuildContext context) {
     return Container(
