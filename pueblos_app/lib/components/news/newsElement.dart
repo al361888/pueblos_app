@@ -49,7 +49,7 @@ class _NewsElementState extends State<NewsElement> {
     return Hero(
       tag: 'news$id',
       child: Material(
-        child: GestureDetector(
+        child: InkWell(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
                 return DetailedNewsItem(

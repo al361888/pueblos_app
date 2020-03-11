@@ -53,7 +53,7 @@ class DetailedNewsItem extends StatelessWidget {
               Hero(
                   tag: 'news$id',
                   child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/images/landscape.jpg',
+                      placeholder: image,
                       image: image)),
               Positioned(
                 bottom: 0,
