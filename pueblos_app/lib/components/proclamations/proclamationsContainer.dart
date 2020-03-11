@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/components/proclamationCard.dart';
+import 'package:pueblos_app/components/proclamations/proclamationCard.dart';
 
 class ProclamationsContainer extends StatefulWidget{
   @override

@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/apiCalls.dart';
-import "package:pueblos_app/components/newsElement.dart";
 import 'package:pueblos_app/model/news.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'imageNewsCard.dart';
+import 'newsElement.dart';
 
 class NewsContainer extends StatefulWidget {
   @override
@@ -70,7 +70,8 @@ class _NewsContainerState extends State<NewsContainer> {
                               news[index].image.toString(),
                               news[index].name,
                               news[index].description,
-                              news[index].publishDate);
+                              news[index].publishDate,
+                              _domain);
                         }
                       }),
                 ),

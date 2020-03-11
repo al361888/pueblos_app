@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../pueblos_icons.dart';
 
 class EventCard extends StatefulWidget {
   String id;
@@ -13,6 +12,7 @@ class EventCard extends StatefulWidget {
   String registrationInitDate;
   String registrationFinishDate;
   String price;
+  String domain;
 
   EventCard(
       String id,
@@ -22,7 +22,8 @@ class EventCard extends StatefulWidget {
       String eventDate,
       String registrationInitDate,
       String registrationFinishDate,
-      String price) {
+      String price,
+      String domain) {
     this.id = id;
     this.image = image;
     this.name = name;
@@ -31,6 +32,7 @@ class EventCard extends StatefulWidget {
     this.registrationInitDate = registrationInitDate;
     this.registrationFinishDate = registrationFinishDate;
     this.price = price;
+    this.domain=domain;
   }
 
   @override
@@ -41,8 +43,7 @@ class _EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     String id = widget.id;
-    String image =
-        "https://mas.villanuevadeviver.es/apps/files/file/" + widget.image;
+    String image = widget.domain + "/apps/files/file/" + widget.image;
     String name = widget.name;
     String description = widget.description;
     String eventDate = widget.eventDate;

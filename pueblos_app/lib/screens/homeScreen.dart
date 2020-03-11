@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/authService.dart';
-import 'package:pueblos_app/components/eventsContainer.dart';
-import 'package:pueblos_app/components/newsContainer.dart';
-import 'package:pueblos_app/components/proclamationsContainer.dart';
+import 'package:pueblos_app/components/events/eventsContainer.dart';
+import 'package:pueblos_app/components/news/newsContainer.dart';
+import 'package:pueblos_app/components/proclamations/proclamationsContainer.dart';
 import 'package:pueblos_app/screens/addProclamationScreen.dart';
-import 'package:pueblos_app/screens/loginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../pueblos_icons.dart';

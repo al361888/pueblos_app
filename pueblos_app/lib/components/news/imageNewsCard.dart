@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'detailedNewsItem.dart';
 import 'newsElement.dart';
 
 class ImageNewsCard extends StatefulWidget {

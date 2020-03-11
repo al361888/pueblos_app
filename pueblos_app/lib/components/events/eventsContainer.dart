@@ -66,6 +66,7 @@ class _EventsContainerState extends State<EventsContainer> {
                               events[index].registrationInitDate,
                               events[index].registrationFinishDate,
                               events[index].price,
+                              _domain
                     );
                   },
                 ))
