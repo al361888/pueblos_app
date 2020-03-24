@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'model/user.dart';
 
@@ -14,12 +15,12 @@ class AuthService {
 
     if (uriResponse.statusCode == 200) {
       print(uriResponse.body.toString());
-      
+
       // obtain shared preferences
       final userPrefs = await SharedPreferences.getInstance();
 
       var convertToData = json.decode(uriResponse.body);
-      var user=User.fromJson(convertToData);
+      var user = User.fromJson(convertToData);
 
       var email = user.email;
       var name = user.name;
@@ -31,15 +32,19 @@ class AuthService {
       print(activeName);
       print(activeDomain);
 
-      // set value
+      // set values into sharedPreferences
       userPrefs.setString('user', name);
       userPrefs.setString('email', email);
       userPrefs.setString('activeVillage', activeVillage);
       userPrefs.setString('activeName', activeName);
       userPrefs.setString('activeDomain', activeDomain);
 
+      //Store username and password locally
+      final storage = new FlutterSecureStorage();
+      await storage.write(key: 'username', value: name);
+      await storage.write(key: 'password', value: pass);
+
       return true;
-      
     } else {
       print(uriResponse.statusCode);
       print("No existe ese usuario");
@@ -53,7 +58,22 @@ class AuthService {
     final userPrefs = await SharedPreferences.getInstance();
     userPrefs.remove("user");
     userPrefs.remove("email");
+
+    final storage = new FlutterSecureStorage();
+    storage.deleteAll();
+
     return await new Future<void>.delayed(new Duration(seconds: 1));
   }
-}
 
+  Future<bool> checkFirstLogin() async {
+    final storage = new FlutterSecureStorage();
+
+    String value = await storage.read(key: 'username');
+    print(value);
+    if (value == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}

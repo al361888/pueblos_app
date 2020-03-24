@@ -72,7 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             labelText: "Enter Email", fillColor: Colors.white),
                         keyboardType: TextInputType.text,
                         onChanged: (String value){
-                          print("hola " + value);
                           this._userData.email = value;
                         },
                       ),

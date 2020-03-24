@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:pueblos_app/screens/loginScreen.dart';
+import 'package:pueblos_app/authService.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,51 +22,46 @@ class _SplashScreenState extends State<SplashScreen> {
     super.dispose();
   }
 
-  void _onShowLogin() {
-    if(mounted){
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
+  Future<void> _onShowLogin() async {
+    bool firstLogin = true;
+    await AuthService().checkFirstLogin().then((result) {
+      firstLogin = result;
+    });
+
+    if (firstLogin) {
+      Navigator.of(context).pushReplacementNamed('/LoginScreen');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/HomeScreen');
     }
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.grey[600],
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 100.0,
-          ),
-          Flexible(
-            flex: 2,
-            child: SafeArea(
-              child: FractionallySizedBox(
-                widthFactor: 0.7,
-                child: Image.asset('assets/argelbejarano.png'),
-              ),
+      child: Container(
+        //decoration: ,
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 100.0,
             ),
-          ),
-          Text(
-            'Bienvenido',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-            ),
-          ),
-          Flexible(
-            flex: 2,
-            child: SafeArea(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 64.0, horizontal: 16.0),
-                alignment: Alignment.bottomCenter,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+            Image.asset("assets/images/escudo.png", width: 40, height: 40),
+            Flexible(
+              flex: 2,
+              child: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 64.0, horizontal: 16.0),
+                  alignment: Alignment.bottomCenter,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            Container(child: Text('Created By Wisclic Tech'),)
+          ],
+        ),
       ),
     );
   }

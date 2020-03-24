@@ -30,12 +30,10 @@ class _HomeScreen extends State<HomeScreen> {
   _loadUser() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
     setState(() {
-      _user = (userPrefs.getString('user') ?? 'Username');
-      _email = (userPrefs.getString('email') ?? 'email@email.com');
+      _user = (userPrefs.getString('user') ?? 'John Doe');
+      _email = (userPrefs.getString('email') ?? 'No email');
 
       _activeVillageName = userPrefs.getString('activeName');
-
-      print(_activeVillageName);
     });
   }
 
@@ -169,7 +167,7 @@ class _HomeScreen extends State<HomeScreen> {
                     _email = "",
                     AuthService().logout(),
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/', (Route<dynamic> route) => false)
+                        '/LoginScreen', (Route<dynamic> route) => false)
                   },
                 )
               ],
