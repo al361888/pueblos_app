@@ -30,7 +30,7 @@ class _HomeScreen extends State<HomeScreen> {
   _loadUser() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
     setState(() {
-      _user = (userPrefs.getString('user') ?? 'John Doe');
+      _user = (userPrefs.getString('user') ?? 'Sesión no iniciada');
       _email = (userPrefs.getString('email') ?? 'No email');
 
       _activeVillageName = userPrefs.getString('activeName');

@@ -65,15 +65,23 @@ class AuthService {
     return await new Future<void>.delayed(new Duration(seconds: 1));
   }
 
+  //Función que comprueba si la sesión está iniciada 
   Future<bool> checkFirstLogin() async {
     final storage = new FlutterSecureStorage();
 
     String value = await storage.read(key: 'username');
-    print(value);
+    
     if (value == null) {
       return true;
     } else {
       return false;
     }
+  }
+
+  Future<void> loginWithoutAccount(String selectedVillage) async {
+    final storage = new FlutterSecureStorage();
+
+    await storage.write(key: "village", value: selectedVillage);
+    
   }
 }

@@ -10,7 +10,13 @@ class _AddProclamationScreenState extends State<AddProclamationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Crear nuevo bando", style: TextStyle(color: Colors.white),)),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+          title: Text(
+        "Nuevo bando",
+        //style: TextStyle(color: Colors.white),
+      )),
       body: Container(
         padding: EdgeInsets.all(20),
         child: NewProclamationForm(),
@@ -114,18 +120,26 @@ class NewProclamationFormState extends State<NewProclamationForm> {
               },
             ),
             Padding(padding: EdgeInsets.only(top: 30)),
-            RaisedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, otherwise false.
-                if (_formKey.currentState.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  submit();
-                }
-              },
-              child: Text('CREAR'),
-              color: Color(0xFF29BF79),
-              textColor: Colors.white,
+            Container(
+              height: 50,
+              child: RaisedButton(
+                onPressed: () {
+                  // Validate returns true if the form is valid, otherwise false.
+                  if (_formKey.currentState.validate()) {
+                    // If the form is valid, display a snackbar. In the real world,
+                    // you'd often call a server or save the information in a database.
+                    submit();
+                  }
+                },
+                child: Text(
+                  'CREAR',
+                  style: TextStyle(fontSize: 20),
+                ),
+                color: Theme.of(context).primaryColor,
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
+              ),
             )
           ],
         ));
@@ -135,6 +149,6 @@ class NewProclamationFormState extends State<NewProclamationForm> {
     print(_data.title);
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('Processing Data')));
-        Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

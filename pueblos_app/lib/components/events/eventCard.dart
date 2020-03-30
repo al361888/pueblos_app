@@ -70,18 +70,27 @@ class _EventCardState extends State<EventCard> {
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: Container(decoration: const BoxDecoration(color: Colors.red)),
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.only(bottomLeft: Radius.circular(10), topLeft: Radius.circular(10)),
+                    child: FadeInImage.assetNetwork(
+                  placeholder: 'assets/images/loading.gif',
+                  image: image,
+                  height: 260,
+                  fit: BoxFit.cover,
+                )),
               ),
-              Expanded(flex:1,child: Padding(padding: EdgeInsets.only(left: 15))),
+              Padding(padding: EdgeInsets.only(left: 15)),
               Expanded(
                 flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Padding(padding: EdgeInsets.only(top: 15)),
                     Container(
-                        padding: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(right: 15),
                         child: Text(
                           name,
                           style: TextStyle(
@@ -89,7 +98,7 @@ class _EventCardState extends State<EventCard> {
                           maxLines: 10,
                           overflow: TextOverflow.ellipsis,
                         )),
-                    Padding(padding: EdgeInsets.only(top: 10)),
+                    Padding(padding: EdgeInsets.only(top: 15)),
                     Row(
                       children: <Widget>[
                         Icon(

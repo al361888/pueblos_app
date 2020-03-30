@@ -1,48 +1,48 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/screens/homeScreen.dart';
-import 'package:pueblos_app/authService.dart';
-import 'package:pueblos_app/screens/villageSelector.dart';
 
-import 'registerScreen.dart';
+import '../authService.dart';
+import 'homeScreen.dart';
+import 'loginScreen.dart';
+import 'villageSelector.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _LoginScreenState();
+  State<StatefulWidget> createState() => _RegisterScreenState();
 }
 
-class _LoginUserData {
+class _RegisterUserData {
   String username = "";
   String pass = "";
+  String email = "";
+  String village = "";
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey1 = GlobalKey<FormState>();
-  _LoginUserData _userData = _LoginUserData();
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKeyReg = GlobalKey<FormState>();
+  _RegisterUserData _registerUserData = _RegisterUserData();
   bool _logged = false;
-  bool wrongPass = false;
 
   _onPressed() async {
-    AuthService authService = AuthService();
-    await authService.login(_userData.username, _userData.pass).then((result) {
-      _logged = result;
-    });
-    if (_logged) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    } else {
-      wrongPass = true;
-      showDialog(context: context, builder: (_) => validationWidget());
-    }
+    // AuthService authService = AuthService();
+    // print("Email: " + _registerUserData.username);
+    // await authService.login(_registerUserData.username, _registerUserData.pass).then((result) {
+    //   _logged = result;
+    // });
+    // if (_logged) {
+    //   Navigator.push(
+    //       context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _logged ? HomeScreen() : loginForm(),
+      body: _logged ? HomeScreen() : registerForm(),
     );
   }
 
-  Widget loginForm() {
+  Widget registerForm() {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(fit: StackFit.expand, children: <Widget>[
@@ -78,13 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.only(bottom: 20, top: 10),
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Iniciar Sesión",
+                        "Registrarse",
                         style: TextStyle(color: Colors.white, fontSize: 30),
                       )),
                   Theme(
                     data: ThemeData(primaryColor: Colors.white70),
                     child: Form(
-                      key: _formKey1,
+                      key: _formKeyReg,
                       autovalidate: true,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,42 +104,50 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: Colors.white70, fontSize: 18)),
                             keyboardType: TextInputType.text,
                             onChanged: (String value) {
-                              this._userData.username = value;
-                            },
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Introduce un nombre de usuario';
-                              }
-                              return null;
+                              this._registerUserData.username = value;
                             },
                           ),
                           Padding(padding: EdgeInsets.only(top: 10.0)),
                           TextFormField(
-                            cursorColor: Theme.of(context).primaryColor,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                  color: Colors.white70,
-                                )),
-                                icon: Icon(Icons.lock_outline),
-                                hintText: "Contraseña",
-                                hintStyle: TextStyle(
-                                    color: Colors.white70, fontSize: 18)),
-                            obscureText: true,
-                            keyboardType: TextInputType.text,
-                            onChanged: (String value) {
-                              this._userData.pass = value;
-                            },
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Introduce una contraseña';
-                              }
-                              return null;
-                            },
+                              cursorColor: Theme.of(context).primaryColor,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                    color: Colors.white70,
+                                  )),
+                                  icon: Icon(Icons.lock_outline),
+                                  hintText: "Contraseña",
+                                  hintStyle: TextStyle(
+                                      color: Colors.white70, fontSize: 18)),
+                              obscureText: true,
+                              keyboardType: TextInputType.text,
+                              onChanged: (String value) {
+                                this._registerUserData.pass = value;
+                              }),
+                          Padding(padding: EdgeInsets.only(top: 10.0)),
+                          TextFormField(
+                              cursorColor: Theme.of(context).primaryColor,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                    color: Colors.white70,
+                                  )),
+                                  icon: Icon(Icons.email),
+                                  hintText: "Correo electrónico",
+                                  hintStyle: TextStyle(
+                                      color: Colors.white70, fontSize: 18)),
+                              obscureText: true,
+                              keyboardType: TextInputType.text,
+                              onChanged: (String value) {
+                                this._registerUserData.email = value;
+                              }),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 40.0),
                           ),
-                          Padding(padding: EdgeInsets.only(top: 40.0)),
                           Container(
                             width: 380,
                             height: 50,
@@ -148,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: _onPressed,
                               child: Container(
                                   child: Text(
-                                "Acceder",
+                                "Registrarse",
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.white),
                               )),
@@ -169,14 +177,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: FlatButton(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
-                    "¿No tienes cuenta? Regístrate",
+                    "¿Ya tienes cuenta? Inicia sesión",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RegisterScreen()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
                 )),
             Container(
@@ -197,33 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ]),
-    );
-  }
-
-  Widget validationWidget() {
-    return AlertDialog(
-      title: Center(
-          child: Text(
-        "¡Error al iniciar sesión!",
-        style: TextStyle(color: Colors.red[600]),
-      )),
-      content: Text(
-        "El usuario y la contraseña introducidos no coinciden. Por favor, inténtelo de nuevo.",
-        textAlign: TextAlign.justify,
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text(
-            "Reintentar",
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }

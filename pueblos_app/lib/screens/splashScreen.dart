@@ -10,30 +10,30 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   Timer _timer;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _timer = Timer(const Duration(seconds: 2), _onShowLogin);
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 2), _onShowLogin);
+  }
 
-  // @override
-  // void dispose() {
-  //   _timer.cancel();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
-  // Future<void> _onShowLogin() async {
-  //   bool firstLogin = true;
-  //   await AuthService().checkFirstLogin().then((result) {
-  //     firstLogin = result;
-  //   });
+  Future<void> _onShowLogin() async {
+    bool firstLogin = true;
+    await AuthService().checkFirstLogin().then((result) {
+      firstLogin = result;
+    });
 
-  //   if (firstLogin) {
-  //     Navigator.of(context).pushReplacementNamed('/LoginScreen');
-  //   } else {
-  //     Navigator.of(context).pushReplacementNamed('/HomeScreen');
-  //   }
-  // }
+    if (firstLogin) {
+      Navigator.of(context).pushReplacementNamed('/VillageSelector');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/HomeScreen');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
