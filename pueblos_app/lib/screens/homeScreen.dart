@@ -38,7 +38,7 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   //Las opciones del BottomNavBar
-  final List<Widget> _widgetOptions = <Widget>[
+  List<Widget> _widgetOptions = <Widget>[
     ProclamationsContainer(), //Container con la lista de bandos
     NewsContainer(), //Container con la lista de noticias
     EventsContainer() //Container con la lista de eventos

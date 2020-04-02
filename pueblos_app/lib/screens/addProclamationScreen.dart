@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/homeScreen.dart';
 
+import '../dbService.dart';
+
 class AddProclamationScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AddProclamationScreenState();
@@ -11,12 +13,12 @@ class _AddProclamationScreenState extends State<AddProclamationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           title: Text(
-        "Nuevo bando",
-        //style: TextStyle(color: Colors.white),
-      )),
+            "Nuevo bando",
+            //style: TextStyle(color: Colors.white),
+          )),
       body: Container(
         padding: EdgeInsets.all(20),
         child: NewProclamationForm(),
@@ -126,9 +128,8 @@ class NewProclamationFormState extends State<NewProclamationForm> {
                 onPressed: () {
                   // Validate returns true if the form is valid, otherwise false.
                   if (_formKey.currentState.validate()) {
-                    // If the form is valid, display a snackbar. In the real world,
-                    // you'd often call a server or save the information in a database.
-                    submit();
+                    firebaseAdd(this._data.title, this._data.description,
+                        this._data.community);
                   }
                 },
                 child: Text(
@@ -145,10 +146,69 @@ class NewProclamationFormState extends State<NewProclamationForm> {
         ));
   }
 
-  void submit() {
-    print(_data.title);
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Processing Data')));
-    Navigator.pop(context);
+  void firebaseAdd(String title, String description, String community) {
+    var db = DBService("NvPUvkMOvGFqajAp86i9");
+    var ret = db.addProclamation(title, description, community);
+    if (ret == null) {
+      //No se ha creado el bando
+      showDialog(context: context, builder: (_) => errorDialog());
+    } else {
+      showDialog(context: context, builder: (_) => successDialog());
+    }
+  }
+
+  Widget errorDialog() {
+    return AlertDialog(
+      title: Center(
+          child: Text(
+        "¡Error al crear el bando!",
+        style: TextStyle(color: Colors.red[600]),
+      )),
+      content: Text(
+        "Ha ocurrido un error al intentar crear el bando. Por favor, inténtalo de nuevo.",
+        textAlign: TextAlign.justify,
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+            "Reintentar",
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+
+  Widget successDialog() {
+    return AlertDialog(
+      title: Center(
+          child: Text(
+        "¡Bando creado correctamente!",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      )),
+      content: Text(
+        "Se ha creado el bando de forma satisfactoria. Puedes ver todos los bandos activos en la lista de bandos.",
+        textAlign: TextAlign.justify,
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+            "Cerrar",
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/HomeScreen', (Route<dynamic> route) => false);
+          },
+        ),
+      ],
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
   }
 }

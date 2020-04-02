@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ProclamationCard extends StatefulWidget {
+  String title;
+  String description;
+  String community;
+  String date;
+
+  ProclamationCard(
+      String title, String description, String community, String date) {
+    this.title = title;
+    this.description = description;
+    this.community = community;
+    this.date = date;
+  }
   @override
   _ProclamationCardState createState() => _ProclamationCardState();
 }
@@ -8,11 +20,13 @@ class ProclamationCard extends StatefulWidget {
 class _ProclamationCardState extends State<ProclamationCard> {
   String tiempoTarjeta = calculateTimeDiff();
 
-  Image escudoComunidad; 
-  Text titulo; 
-  Text descripcion; 
+  Image escudoComunidad;
+
   @override
   Widget build(BuildContext context) {
+    String title = widget.title;
+    String description = widget.description;
+
     return Container(
       child: Card(
         child: InkWell(
@@ -30,7 +44,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
                         width: 60, height: 60),
                     Padding(padding: EdgeInsets.all(10.0)),
                     Text(
-                      "Ha venido el afilador",
+                      title,
                       textAlign: TextAlign.center,
                     ),
                   ]),
@@ -38,7 +52,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
                     child: ListBody(
                       children: <Widget>[
                         Text(
-                          'Et et accumsan eu congue. Amet amet neque ut imperdiet amet nec porta tellus id. Varius et viverra senectus id imperdiet urna id vitae maecenas. Morbi porttitor volutpat tincidunt mauris duis mauris id faucibus quis. Id id vitae sit et sed eu id. At egestas.',
+                          description,
                           textAlign: TextAlign.justify,
                         ),
                       ],
@@ -46,7 +60,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
                   ),
                   actions: <Widget>[
                     FlatButton(
-                      child: Text('Cerrar'),
+                      child: Text('Cerrar', style: TextStyle(color: Theme.of(context).primaryColor),),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -60,7 +74,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
               //Aqui empieza el codigo de apariencia de la carta
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(top: 15, left: 15, right: 15),
                     child: Image.asset("assets/images/escudo.png",
@@ -70,7 +84,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
                     child: Container(
                       padding: EdgeInsets.only(top: 20, right: 20),
                       child: Text(
-                          "El carnicero se ha cortado la mano con la chopetera.",
+                          title,
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18)),
                     ),

@@ -1,21 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/proclamations/proclamationCard.dart';
+import 'package:pueblos_app/model/proclamation.dart';
 
-class ProclamationsContainer extends StatefulWidget{
+import '../../dbService.dart';
+
+class ProclamationsContainer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ProclamationContainer();
 }
-  
-class _ProclamationContainer extends State<ProclamationsContainer>{
+
+class _ProclamationContainer extends State<ProclamationsContainer> {
+  var proclamations = List<Proclamation>();
+  bool isLoading = true;
+
+  _getProclamations() async {
+    var db = DBService("NvPUvkMOvGFqajAp86i9");
+
+    await db.getVillageProclamations().then((response) {
+      setState(() {
+        proclamations = response;
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    _getProclamations();
+  }
+
+  dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[ProclamationCard(),
-          ProclamationCard(),
-          ProclamationCard(),
-        ],
-      ),
-    );
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Container(
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: proclamations.length,
+                      itemBuilder: (context, index) {
+                        return ProclamationCard(
+                            proclamations[index].title,
+                            proclamations[index].description,
+                            proclamations[index].community,
+                            proclamations[index].publicationDate);
+                      }),
+                )
+              ],
+            ),
+          );
   }
 }

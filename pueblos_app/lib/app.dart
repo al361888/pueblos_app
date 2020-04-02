@@ -22,6 +22,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Color(0xFF0EB768),
+        accentColor: Color(0xCC272741),
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
