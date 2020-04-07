@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'messageHandler.dart';
 import 'model/user.dart';
 
 class AuthService {
@@ -44,6 +45,9 @@ class AuthService {
       await storage.write(key: 'username', value: name);
       await storage.write(key: 'password', value: pass);
 
+      MessageHandler messageHandler = MessageHandler();
+      messageHandler.fcmSubscribe("VillanuevaDeViver");
+
       return true;
     } else {
       print(uriResponse.statusCode);
@@ -62,15 +66,18 @@ class AuthService {
     final storage = new FlutterSecureStorage();
     storage.deleteAll();
 
+    MessageHandler messageHandler = MessageHandler();
+    messageHandler.fcmUnSubscribe("VillanuevaDeViver");
+
     return await new Future<void>.delayed(new Duration(seconds: 1));
   }
 
-  //Función que comprueba si la sesión está iniciada 
+  //Función que comprueba si la sesión está iniciada
   Future<bool> checkFirstLogin() async {
     final storage = new FlutterSecureStorage();
 
     String value = await storage.read(key: 'username');
-    
+
     if (value == null) {
       return true;
     } else {
@@ -82,6 +89,8 @@ class AuthService {
     final storage = new FlutterSecureStorage();
 
     await storage.write(key: "village", value: selectedVillage);
-    
+
+    MessageHandler messageHandler = MessageHandler();
+    messageHandler.fcmSubscribe("VillanuevaDeViver");
   }
 }

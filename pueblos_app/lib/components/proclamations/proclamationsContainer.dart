@@ -39,6 +39,7 @@ class _ProclamationContainer extends State<ProclamationsContainer> {
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : Container(
+          padding: EdgeInsets.only(top:10),
             child: Column(
               children: <Widget>[
                 Expanded(
