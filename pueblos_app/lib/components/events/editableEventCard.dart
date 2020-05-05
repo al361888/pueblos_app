@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/screens/eventSubscriptionsScreen.dart';
 
 import 'detailedEvent.dart';
 
-class EventCard extends StatefulWidget {
+class EditableEventCard extends StatefulWidget {
   String id;
   String image;
   String name;
@@ -15,7 +16,7 @@ class EventCard extends StatefulWidget {
   String price;
   String domain;
 
-  EventCard(
+  EditableEventCard(
       String id,
       String image,
       String name,
@@ -37,10 +38,10 @@ class EventCard extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => _EventCardState();
+  State<StatefulWidget> createState() => _EditableEventCardState();
 }
 
-class _EventCardState extends State<EventCard> {
+class _EditableEventCardState extends State<EditableEventCard> {
   @override
   Widget build(BuildContext context) {
     String id = widget.id;
@@ -137,6 +138,40 @@ class _EventCardState extends State<EventCard> {
                   ],
                 ),
               ),
+              Expanded(
+                      child: PopupMenuButton<int>(
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 1,
+                            child: Text("Ver inscripciones"),
+                          ),
+                          PopupMenuItem(
+                            value: 2,
+                            child: Text("Ocultar evento"),
+                          ),
+                          PopupMenuItem(
+                            value: 3,
+                            child: Text("Editar evento"),
+                          ),
+                          PopupMenuItem(
+                            value: 4,
+                            child: Text("Eliminar evento"),
+                          ),
+                        ],
+                        onSelected: (value) {
+                          if (value == 1) {
+                            Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EventSubscriptionsScreen()));
+                          } else if (value == 2) {
+                            print("Ocultar evento");
+                          } else if (value == 3) {
+                            print("Editar evento");
+                          } else if (value == 4) {
+                            print("Eliminar evento");
+                          }
+                        },
+                      ),
+                    )
             ],
           ),
         ),

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'detailedNewsItem.dart';
 
-class NewsElement extends StatefulWidget {
+class EditableNewsElement extends StatefulWidget {
   String id;
   String image;
   String title;
@@ -12,7 +12,7 @@ class NewsElement extends StatefulWidget {
   String publishDate;
   String domain;
 
-  NewsElement(String id, String image, String name, String description,
+  EditableNewsElement(String id, String image, String name, String description,
       String publishDate, String domain) {
     this.id = id;
     this.image = image;
@@ -23,14 +23,12 @@ class NewsElement extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => _NewsElementState();
+  State<StatefulWidget> createState() => _EditableNewsElementState();
 }
 
-class _NewsElementState extends State<NewsElement> {
-
+class _EditableNewsElementState extends State<EditableNewsElement> {
   @override
   Widget build(BuildContext context) {
-    bool isEditable = true;
     String domain = widget.domain;
     String id = widget.id;
     String image = widget.image;
@@ -39,12 +37,11 @@ class _NewsElementState extends State<NewsElement> {
     String publishDate = widget.publishDate;
 
     String tiempoNoticia = calculateTimeDiff(publishDate);
-
-    if (image == null) {
+    if (image != null) {
+      image = domain + "/apps/files/file/" + image;
+    } else {
       image =
           "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
-    } else {
-      image = domain+ "/apps/files/file/" + image;
     }
 
     return Hero(
@@ -114,6 +111,33 @@ class _NewsElementState extends State<NewsElement> {
                               ),
                             ]),
                       ),
+                      Container(
+                        child: PopupMenuButton<int>(
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 1,
+                              child: Text("Ocultar noticia"),
+                            ),
+                            PopupMenuItem(
+                              value: 2,
+                              child: Text("Editar noticia"),
+                            ),
+                            PopupMenuItem(
+                              value: 3,
+                              child: Text("Eliminar noticia"),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            if (value == 1) {
+                              print("Ocultar noticia");
+                            } else if (value == 2) {
+                              print("Editar noticia");
+                            } else if (value == 3) {
+                              print("Eliminar noticia");
+                            }
+                          },
+                        ),
+                      )
                     ],
                   )),
             )),
@@ -121,4 +145,3 @@ class _NewsElementState extends State<NewsElement> {
     );
   }
 }
-

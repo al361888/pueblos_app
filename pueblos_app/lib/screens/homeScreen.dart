@@ -7,6 +7,8 @@ import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../pueblos_icons.dart';
+import 'configEventsScreen.dart';
+import 'configNewsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -61,6 +63,22 @@ class _HomeScreen extends State<HomeScreen> {
       child: Icon(Icons.add),
       backgroundColor: Color(0xFF29BF79),
     );
+    var configNewsButton = FloatingActionButton(
+      onPressed: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => configNewsScreen()));
+      },
+      child: Icon(Icons.settings),
+      backgroundColor: Color(0xFF29BF79),
+    );
+    var configEventsButton = FloatingActionButton(
+      onPressed: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => configEventsScreen()));
+      },
+      child: Icon(Icons.settings),
+      backgroundColor: Color(0xFF29BF79),
+    );
 
     //Construccion de la pantalla
     return Scaffold(
@@ -84,7 +102,7 @@ class _HomeScreen extends State<HomeScreen> {
         ],
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      floatingActionButton: _selectedIndex == 0 ? addButton : null,
+      floatingActionButton: _selectedIndex == 0 ? addButton : (_selectedIndex == 1 ? configNewsButton: configEventsButton),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -145,8 +163,8 @@ class _HomeScreen extends State<HomeScreen> {
             Wrap(
               children: <Widget>[
                 ListTile(
-                  leading: Icon(Icons.portrait),
-                  title: Text("Mi Perfil"),
+                  leading: Icon(Icons.event_note),
+                  title: Text("Mis eventos"),
                   onTap: () => {},
                 ),
                 ListTile(
