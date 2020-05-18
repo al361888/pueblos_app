@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/screens/eventSubscriptionsScreen.dart';
+import 'package:pueblos_app/screens/eventInscriptionsScreen.dart';
 
 import 'detailedEvent.dart';
 
@@ -161,7 +161,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
                         onSelected: (value) {
                           if (value == 1) {
                             Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EventSubscriptionsScreen()));
+            MaterialPageRoute(builder: (context) => EventInscriptionsScreen()));
                           } else if (value == 2) {
                             print("Ocultar evento");
                           } else if (value == 3) {

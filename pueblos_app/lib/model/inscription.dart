@@ -1,4 +1,4 @@
-class Subscription{
+class Inscription{
   String name;
   String subscriptionDate;
 }

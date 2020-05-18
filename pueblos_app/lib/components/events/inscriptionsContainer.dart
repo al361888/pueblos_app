@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/components/events/subscriptionCard.dart';
-import 'package:pueblos_app/model/subscription.dart';
+import 'package:pueblos_app/components/events/inscriptionCard.dart';
+import 'package:pueblos_app/model/inscription.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
 
-class SubscriptionsContainer extends StatefulWidget {
+class InscriptionsContainer extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SubscriptionsContainerState();
+  State<StatefulWidget> createState() => _InscriptionsContainerState();
 }
 
-class _SubscriptionsContainerState extends State<SubscriptionsContainer> {
+class _InscriptionsContainerState extends State<InscriptionsContainer> {
   String totalAsistants = "12";
   String inscriptionsNum = "5";
-  var subscriptions = List<Subscription>();
+  var subscriptions = List<Inscription>();
+  ScanResult _barcode;
 
   @override
   Widget build(BuildContext context) {
+    _barcode!=null?print(_barcode.rawContent):print("No hay codigo");
     return Container(
       child: Column(
         children: <Widget>[
@@ -24,21 +28,24 @@ class _SubscriptionsContainerState extends State<SubscriptionsContainer> {
               children: <Widget>[
                 Container(
                     child: Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            onPressed: () => print("Searched"),
-                            icon: Icon(Icons.search),
-                          ),
-                        ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        onPressed: () => print("Searched"),
+                        icon: Icon(Icons.search),
                       ),
-                    )),
+                    ),
+                  ),
+                )),
                 Padding(padding: EdgeInsets.only(left: 10)),
                 Container(
-                  child: Icon(
-                    Icons.center_focus_weak,
-                    size: 32,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.center_focus_weak,
+                      size: 32,
+                    ),
+                    onPressed: scan,
                   ),
                 )
               ],
@@ -46,7 +53,6 @@ class _SubscriptionsContainerState extends State<SubscriptionsContainer> {
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
           Row(
-            //Searchbar y filtros
             children: <Widget>[
               Expanded(
                 child: Container(
@@ -116,23 +122,47 @@ class _SubscriptionsContainerState extends State<SubscriptionsContainer> {
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
-          SubscriptionCard()
+          InscriptionCard()
         ],
       ),
     );
   }
-  Widget suscriptionList(){
+
+  Widget suscriptionList() {
     return Container(
-          padding: EdgeInsets.only(top:10),
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: SubscriptionCard(),
-                )
-              ],
-            ),
-          );
+      padding: EdgeInsets.only(top: 10),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: InscriptionCard(),
+          )
+        ],
+      ),
+    );
   }
 
-  
+  Future scan() async {
+    try {
+
+      var result = await BarcodeScanner.scan();
+
+      setState(() => this._barcode = result);
+    } on PlatformException catch (e) {
+      var result = ScanResult(
+        type: ResultType.Error,
+        format: BarcodeFormat.unknown,
+      );
+
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
+        setState(() {
+          result.rawContent = 'The user did not grant the camera permission!';
+        });
+      } else {
+        result.rawContent = 'Unknown error: $e';
+      }
+      setState(() {
+        this._barcode = result;
+      });
+    }
+  }
 }
