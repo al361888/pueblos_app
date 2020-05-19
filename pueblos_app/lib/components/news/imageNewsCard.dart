@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 
 import 'detailedNewsItem.dart';
-import 'newsElement.dart';
 
 class ImageNewsCard extends StatefulWidget {
   String id;
@@ -10,13 +8,16 @@ class ImageNewsCard extends StatefulWidget {
   String title;
   String description;
   String publishDate;
+  String domain;
 
-  ImageNewsCard(String id, String image, String title, String description, String publishDate) {
+  ImageNewsCard(String id, String image, String title, String description,
+      String publishDate, String domain) {
     this.id = id;
     this.image = image;
     this.title = title;
     this.description = description;
     this.publishDate = publishDate;
+    this.domain = domain;
   }
 
   @override
@@ -26,6 +27,7 @@ class ImageNewsCard extends StatefulWidget {
 class _ImageNewsCardState extends State<ImageNewsCard> {
   @override
   Widget build(BuildContext context) {
+    String domain = widget.domain;
     String id = widget.id;
     String image = widget.image;
     String title = widget.title;
@@ -35,14 +37,16 @@ class _ImageNewsCardState extends State<ImageNewsCard> {
     if (image == null) {
       image =
           "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
+    } else {
+      image = domain + "/apps/files/file/" + image;
     }
 
     return GestureDetector(
       onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return DetailedNewsItem(id, title, image, description, publishDate);
-            }));
-          },
+        Navigator.push(context, MaterialPageRoute(builder: (_) {
+          return DetailedNewsItem(id, title, image, description, publishDate);
+        }));
+      },
       child: Container(
         child: SizedBox(
           width: 800,
@@ -82,8 +86,8 @@ class _ImageNewsCardState extends State<ImageNewsCard> {
                   )
                 ],
               ),
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
           ),
         ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/components/events/inscriptionCard.dart';
 import 'package:pueblos_app/model/inscription.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+
+import 'inscriptionCard.dart';
 
 class InscriptionsContainer extends StatefulWidget {
   @override
@@ -10,14 +11,40 @@ class InscriptionsContainer extends StatefulWidget {
 }
 
 class _InscriptionsContainerState extends State<InscriptionsContainer> {
+  final myController = TextEditingController();
+  var inscriptions = List<Inscription>();
+  ScanResult _barcode;
   String totalAsistants = "12";
   String inscriptionsNum = "5";
-  var subscriptions = List<Inscription>();
-  ScanResult _barcode;
+  // String inscriptionsNum = inscriptions.length;
+  bool isLoading = true;
+
+  _getAsistants() async {
+    // SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    // _domain = userPrefs.getString('activeDomain');
+
+    // ApiCalls(_domain).getAsistants().then((response) {
+    //   if (response.statusCode == 200) {
+    //     setState(() {
+    //       Iterable list = json.decode(response.body)['data'];
+    //       inscriptions = list.map((model) => Inscription.fromJson(model)).toList();
+    //     });
+    //     isLoading = false;
+    //   } else {
+    //     _getAsistants();
+    //   }
+    // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAsistants();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _barcode!=null?print(_barcode.rawContent):print("No hay codigo");
+    _barcode != null ? print(_barcode.rawContent) : print("No hay codigo");
     return Container(
       child: Column(
         children: <Widget>[
@@ -29,10 +56,13 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
                 Container(
                     child: Expanded(
                   child: TextField(
+                    controller: myController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
-                        onPressed: () => print("Searched"),
+                        onPressed: (){
+                          search(myController.text);
+                        },
                         icon: Icon(Icons.search),
                       ),
                     ),
@@ -122,28 +152,28 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
-          InscriptionCard()
+          suscriptionList()
         ],
       ),
     );
   }
 
   Widget suscriptionList() {
-    return Container(
-      padding: EdgeInsets.only(top: 10),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: InscriptionCard(),
-          )
-        ],
-      ),
-    );
+    return Expanded(
+        child: ListView.builder(
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return InscriptionCard();
+            }));
+  }
+
+  String search(String s){
+    print(s);
+    return s;
   }
 
   Future scan() async {
     try {
-
       var result = await BarcodeScanner.scan();
 
       setState(() => this._barcode = result);

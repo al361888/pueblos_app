@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pueblos_app/screens/addNewsScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'detailedNewsItem.dart';
@@ -116,15 +117,40 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                           itemBuilder: (context) => [
                             PopupMenuItem(
                               value: 1,
-                              child: Text("Ocultar noticia"),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.visibility_off,
+                                      color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Ocultar noticia",
+                                      style:
+                                          TextStyle(color: Color(0xFF1E2C41))),
+                                ],
+                              ),
                             ),
                             PopupMenuItem(
                               value: 2,
-                              child: Text("Editar noticia"),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.edit, color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Editar noticia",
+                                      style:
+                                          TextStyle(color: Color(0xFF1E2C41))),
+                                ],
+                              ),
                             ),
                             PopupMenuItem(
                               value: 3,
-                              child: Text("Eliminar noticia"),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.delete, color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Eliminar noticia",
+                                      style:
+                                          TextStyle(color: Color(0xFF1E2C41))),
+                                ],
+                              ),
                             ),
                           ],
                           onSelected: (value) {

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../pueblos_icons.dart';
 import 'configEventsScreen.dart';
 import 'configNewsScreen.dart';
+import 'myInscriptionsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -102,7 +103,9 @@ class _HomeScreen extends State<HomeScreen> {
         ],
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      floatingActionButton: _selectedIndex == 0 ? addButton : (_selectedIndex == 1 ? configNewsButton: configEventsButton),
+      floatingActionButton: _selectedIndex == 0
+          ? addButton
+          : (_selectedIndex == 1 ? configNewsButton : configEventsButton),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -163,14 +166,14 @@ class _HomeScreen extends State<HomeScreen> {
             Wrap(
               children: <Widget>[
                 ListTile(
-                  leading: Icon(Icons.event_note),
-                  title: Text("Mis eventos"),
-                  onTap: () => {},
-                ),
-                ListTile(
                   leading: Icon(Pueblos.ticket),
                   title: Text("Mis Inscripciones"),
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyInscriptionsScreen()))
+                  },
                 ),
                 ListTile(
                   leading: Icon(Icons.inbox),

@@ -146,6 +146,7 @@ class DetailedEvent extends StatelessWidget {
                         child: SingleChildScrollView(
                             child: Html(data: description)),
                       ),
+                      Padding(padding: EdgeInsets.only(top: 80)),
                     ],
                   )),
             ],

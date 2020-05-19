@@ -63,7 +63,8 @@ class _NewsContainerState extends State<NewsContainer> {
                               news[0].image,
                               news[0].name,
                               news[0].description,
-                              news[0].publishDate);
+                              news[0].publishDate,
+                              _domain);
                         } else {
                           return NewsElement(
                               news[index].id.toString(),

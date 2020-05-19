@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/components/events/inscriptionsContainer.dart';
+import 'package:pueblos_app/components/inscriptions/inscriptionsContainer.dart';
 
 class EventInscriptionsScreen extends StatefulWidget {
   @override

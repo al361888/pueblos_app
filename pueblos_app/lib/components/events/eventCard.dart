@@ -64,7 +64,7 @@ class _EventCardState extends State<EventCard> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          elevation: 4,
+          elevation: 3,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -77,7 +77,7 @@ class _EventCardState extends State<EventCard> {
                     child: FadeInImage.assetNetwork(
                       placeholder: 'assets/images/loading.gif',
                       image: image,
-                      height: 285,
+                      height: 200,
                       fit: BoxFit.cover,
                     )),
               ),
@@ -96,7 +96,7 @@ class _EventCardState extends State<EventCard> {
                           name,
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
-                          maxLines: 10,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         )),
                     Padding(padding: EdgeInsets.only(top: 15)),

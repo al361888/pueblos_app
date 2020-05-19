@@ -78,7 +78,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
                     child: FadeInImage.assetNetwork(
                       placeholder: 'assets/images/loading.gif',
                       image: image,
-                      height: 285,
+                      height: 220,
                       fit: BoxFit.cover,
                     )),
               ),
@@ -97,7 +97,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
                           name,
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
-                          maxLines: 10,
+                          maxLines: 4,
                           overflow: TextOverflow.ellipsis,
                         )),
                     Padding(padding: EdgeInsets.only(top: 15)),
@@ -143,19 +143,43 @@ class _EditableEventCardState extends State<EditableEventCard> {
                         itemBuilder: (context) => [
                           PopupMenuItem(
                             value: 1,
-                            child: Text("Ver inscripciones"),
+                            child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.confirmation_number, color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Ver Inscripciones", style: TextStyle(color:Color(0xFF1E2C41))),
+                                ],
+                              ),
                           ),
                           PopupMenuItem(
                             value: 2,
-                            child: Text("Ocultar evento"),
+                            child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.visibility_off, color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Ocultar evento", style: TextStyle(color:Color(0xFF1E2C41))),
+                                ],
+                              ),
                           ),
                           PopupMenuItem(
                             value: 3,
-                            child: Text("Editar evento"),
+                            child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.edit, color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Editar evento", style: TextStyle(color:Color(0xFF1E2C41))),
+                                ],
+                              ),
                           ),
                           PopupMenuItem(
                             value: 4,
-                            child: Text("Eliminar evento"),
+                            child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.delete, color: Colors.grey),
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text("Eliminar evento", style: TextStyle(color:Color(0xFF1E2C41))),
+                                ],
+                              ),
                           ),
                         ],
                         onSelected: (value) {

@@ -30,7 +30,6 @@ class _NewsElementState extends State<NewsElement> {
 
   @override
   Widget build(BuildContext context) {
-    bool isEditable = true;
     String domain = widget.domain;
     String id = widget.id;
     String image = widget.image;
