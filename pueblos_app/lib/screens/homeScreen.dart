@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pueblos_app/authService.dart';
 import 'package:pueblos_app/components/events/eventsContainer.dart';
 import 'package:pueblos_app/components/news/newsContainer.dart';
 import 'package:pueblos_app/components/proclamations/proclamationsContainer.dart';
+import 'package:pueblos_app/model/user.dart';
 import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../pueblos_icons.dart';
-import 'configEventsScreen.dart';
 import 'configNewsScreen.dart';
+import 'events/configEventsScreen.dart';
 import 'myInscriptionsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,23 +25,32 @@ class _HomeScreen extends State<HomeScreen> {
   String _user = "";
   String _email = "";
   String _activeVillageName = "";
-  String _activeVillageId = "";
+  bool notificationSwitch = false;
+  bool isVillageAdmin;
 
   @override
   void initState() {
     super.initState();
     _loadUser();
+    _isVillageAdmin();
   }
 
   //Carga el usuario que ha iniciado sesion
   _loadUser() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
     setState(() {
-      _user = (userPrefs.getString('user') ?? 'Sesión no iniciada');
+      _user = (userPrefs.getString('userName') ?? 'Sesión no iniciada');
       _email = (userPrefs.getString('email') ?? 'No email');
 
-      _activeVillageName = userPrefs.getString('activeName');
+      _activeVillageName = userPrefs.getString('activeVillageName');
     });
+  }
+
+  _isVillageAdmin() async{
+    SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    print(userPrefs.getString('managedVillages'));
+    Map<String, dynamic> managedVillages =jsonDecode(userPrefs.getString('managedVillages'));
+    
   }
 
   //Las opciones del BottomNavBar
@@ -67,7 +80,7 @@ class _HomeScreen extends State<HomeScreen> {
     var configNewsButton = FloatingActionButton(
       onPressed: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => configNewsScreen()));
+            MaterialPageRoute(builder: (context) => ConfigNewsScreen()));
       },
       child: Icon(Icons.settings),
       backgroundColor: Color(0xFF29BF79),
@@ -75,7 +88,7 @@ class _HomeScreen extends State<HomeScreen> {
     var configEventsButton = FloatingActionButton(
       onPressed: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => configEventsScreen()));
+            MaterialPageRoute(builder: (context) => ConfigEventsScreen()));
       },
       child: Icon(Icons.settings),
       backgroundColor: Color(0xFF29BF79),
@@ -87,7 +100,18 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Icon(Icons.verified_user), //Icono del pueblo
+        leading: IconButton(
+            icon: Icon(Icons.verified_user),
+            onPressed: () => showModalBottomSheet(
+                context: context,
+                builder: (BuildContext bc) {
+                  return SettingVillageModalBottom(
+                    switchValue: notificationSwitch,
+                    valueChanged: (value) {
+                      notificationSwitch = value;
+                    },
+                  );
+                })), //Icono del pueblo
         title: Text(_activeVillageName), //Nombre del pueblo
         actions: <Widget>[
           GestureDetector(
@@ -195,5 +219,76 @@ class _HomeScreen extends State<HomeScreen> {
             )
           ]));
         });
+  }
+}
+
+class SettingVillageModalBottom extends StatefulWidget {
+  SettingVillageModalBottom(
+      {@required this.switchValue, @required this.valueChanged});
+
+  final bool switchValue;
+  final ValueChanged valueChanged;
+
+  @override
+  State<StatefulWidget> createState() => _SettingVillageModalBottom();
+}
+
+class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
+  bool _switchValue;
+
+  @override
+  initState() {
+    super.initState();
+    _switchValue = widget.switchValue;
+  }
+
+  dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.all(20),
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.landscape),
+                  Padding(padding: EdgeInsets.only(left: 10)),
+                  Text(
+                    "Nombre del pueblo",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        color: Colors.grey),
+                  ),
+                ],
+              )),
+          Divider(thickness: 1),
+          Padding(padding: EdgeInsets.only(top: 10)),
+          Container(
+              padding: EdgeInsets.only(left: 20),
+              child: Text("Recibir notificaciones",
+                  style: TextStyle(fontWeight: FontWeight.w500))),
+          Container(
+            child: Switch(
+              value: _switchValue,
+              onChanged: (value) {
+                setState(() {
+                  _switchValue = value;
+                  print(_switchValue);
+                });
+              },
+              activeTrackColor: Colors.lightGreenAccent,
+              activeColor: Colors.green,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

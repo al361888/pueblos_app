@@ -6,6 +6,10 @@ class DetailedInscription extends StatefulWidget {
 }
 
 class _DetailedInscriptionState extends State<DetailedInscription> {
+  String name = "Ruta por el sendero nevado";
+  String eventDate = "21 de enero 2020";
+  String eventTime = "20:30";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +38,75 @@ class _DetailedInscriptionState extends State<DetailedInscription> {
               ),
             ),
             Padding(padding: EdgeInsets.only(top: 10)),
-            Text("Hola")
+            Text(
+              name,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+            ),
+            Padding(padding: EdgeInsets.only(top: 10)),
+            Text(
+              eventDate,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.grey),
+            ),
+            Padding(padding: EdgeInsets.only(top: 10)),
+            Text(
+              eventTime,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.grey),
+            ),
+            Padding(padding: EdgeInsets.only(top: 10)),
+            Expanded(
+              child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return CodeCard();
+              }
+              ),
+            )
           ],
         ),
       )),
+    );
+  }
+}
+
+class CodeCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Image.network(
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
+            width: 350,
+            height: 300,
+          ),
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text("Nombre: ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        height: 1.5)),
+                Text("Es alergico: ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        height: 1.5)),
+                Text("Menu: ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        height: 1.5)),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

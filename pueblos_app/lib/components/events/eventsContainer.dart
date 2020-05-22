@@ -16,12 +16,14 @@ class EventsContainer extends StatefulWidget {
 class _EventsContainerState extends State<EventsContainer> {
   var events = List<Event>();
   bool isLoading = true;
-  String _domain = "";
+  String _domain = "https://vueltalpueblo.wisclic.es/";
+  String _activeVillageId ="";
+
 
   _getEvents() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
-    _domain = userPrefs.getString('activeDomain');
-    ApiCalls(_domain).getEvents().then((response) {
+    _activeVillageId = userPrefs.getString('activeVillageId');
+    ApiCalls().getEvents(_activeVillageId).then((response) {
       if (response.statusCode == 200) {
         setState(() {
           Iterable list = json.decode(response.body)['data'];

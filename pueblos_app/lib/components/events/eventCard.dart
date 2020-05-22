@@ -44,13 +44,19 @@ class _EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     String id = widget.id;
-    String image = widget.domain + "/apps/files/file/" + widget.image;
+    String image = widget.image;
     String name = widget.name;
     String description = widget.description;
     String eventDate = _getProperDateFormat(widget.eventDate);
     String registrationInitDate = widget.registrationInitDate;
     String registrationFinishDate = widget.registrationFinishDate;
     String price = widget.price;
+    if (image == null) {
+      image =
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
+    } else {
+      image = widget.domain + "files/" + image;
+    }
 
     return Container(
       child: InkWell(

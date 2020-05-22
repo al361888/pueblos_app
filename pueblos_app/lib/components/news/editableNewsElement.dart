@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:pueblos_app/screens/addNewsScreen.dart';
+import 'package:pueblos_app/screens/editNewsScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../apiCalls.dart';
 import 'detailedNewsItem.dart';
 
 class EditableNewsElement extends StatefulWidget {
@@ -12,15 +14,17 @@ class EditableNewsElement extends StatefulWidget {
   String description;
   String publishDate;
   String domain;
+  String active;
 
   EditableNewsElement(String id, String image, String name, String description,
-      String publishDate, String domain) {
+      String publishDate, String domain, String active) {
     this.id = id;
     this.image = image;
     this.title = name;
     this.description = description;
     this.publishDate = publishDate;
     this.domain = domain;
+    this.active = active;
   }
 
   @override
@@ -28,6 +32,22 @@ class EditableNewsElement extends StatefulWidget {
 }
 
 class _EditableNewsElementState extends State<EditableNewsElement> {
+  String activeVillageWid;
+  String token;
+
+   @override
+  initState() {
+    super.initState();
+    _getVillageId();
+  }
+
+  _getVillageId() async {
+    SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      activeVillageWid = userPrefs.getString('activeVillageId');
+      token = userPrefs.getString('token');
+    });
+  }
   @override
   Widget build(BuildContext context) {
     String domain = widget.domain;
@@ -39,10 +59,15 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
 
     String tiempoNoticia = calculateTimeDiff(publishDate);
     if (image != null) {
-      image = domain + "/apps/files/file/" + image;
+      image = domain + "/files/" + image;
     } else {
       image =
           "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
+    }
+
+    bool hidden = false;
+    if (widget.active=='0') {
+      hidden= true;
     }
 
     return Hero(
@@ -110,6 +135,9 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                                       fontSize: 14),
                                 ),
                               ),
+                              widget.active=="0"?Container(child: Text("Oculta", style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      color: Color(0xFFF39EB3)))):Container(),
                             ]),
                       ),
                       Container(
@@ -155,9 +183,17 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                           ],
                           onSelected: (value) {
                             if (value == 1) {
-                              print("Ocultar noticia");
+                              bool success = _hideNews(activeVillageWid, widget.id, widget.active, token);
+                              print(success);
+                              if(success){
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia ocultada correctamente")));
+                                Navigator.pop(context);
+                              }else{
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error al ocultar la noticia")));
+                              }
                             } else if (value == 2) {
-                              print("Editar noticia");
+                              Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditNewsScreen(id)));
                             } else if (value == 3) {
                               print("Eliminar noticia");
                             }
@@ -169,5 +205,14 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
             )),
       ),
     );
+  }
+
+  bool _hideNews(String activeVillageWid, String id, String active, String token){
+    bool res = false;
+    ApiCalls().hideNews(activeVillageWid, widget.id, widget.active, token).then((result) {
+      print("RESULT???? "+ (result?"true":"false"));
+      return result;
+    });
+    return res;
   }
 }

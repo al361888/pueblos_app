@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pueblos_app/screens/addInscriptionScreen.dart';
 
 class DetailedEvent extends StatelessWidget {
   String id;
@@ -47,7 +48,10 @@ class DetailedEvent extends StatelessWidget {
         height: 50,
         child: RaisedButton(
           color: Theme.of(context).primaryColor,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AddInscriptionScreen(id)));
+          },
           child: Container(
               child: Text(
             "INSCRIBIRME",

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 
 void main() {
-  //SharedPreferences.setMockInitialValues({});
+  // SharedPreferences.setMockInitialValues({});
   WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])

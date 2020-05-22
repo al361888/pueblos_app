@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class AddNewsScreen extends StatefulWidget {
+class AddEventScreen extends StatefulWidget {
   @override
-  _AddNewsScreenState createState() => _AddNewsScreenState();
+  _AddEventScreenState createState() => _AddEventScreenState();
 }
 
-class _AddNewsScreenState extends State<AddNewsScreen> {
+class _AddEventScreenState extends State<AddEventScreen> {
   bool isLoading;
   String token;
   String villageWid;
@@ -34,13 +34,13 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String url = "https://vueltalpueblo.wisclic.es/m/"+ villageWid +"/news/create";
+    String url = "https://vueltalpueblo.wisclic.es/m/"+ villageWid +"/events/create";
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           title: Text(
-            "Crear noticia",
+            "Crear Evento",
             //style: TextStyle(color: Colors.white),
           )),
       body: Stack(
@@ -48,11 +48,9 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
           WebView(
             javascriptMode: JavascriptMode.unrestricted,
             gestureNavigationEnabled: true,
-            javascriptChannels: <JavascriptChannel>[
-              _newsAddedChannel(context),
-            ].toSet(),
+            javascriptChannels: <JavascriptChannel>[_webViewChannel(context)].toSet(),
             onPageFinished: (String url) {
-               setState(() {
+              setState(() {
                 isLoading = false;
               });
             },
@@ -70,7 +68,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
     );
   }
 
-  JavascriptChannel _newsAddedChannel(BuildContext context) {
+  JavascriptChannel _webViewChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'fcc',
         onMessageReceived: (JavascriptMessage message) {
@@ -78,13 +76,11 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
           MessageInfo newsInfo = MessageInfo.fromJson(info);
           print(newsInfo.success);
           if (newsInfo.success) {
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia añadida correctamente."),));
             Navigator.pop(context);
           }
         });
   }
 }
-
 class MessageInfo {
   final bool success;
 

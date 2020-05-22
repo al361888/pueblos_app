@@ -16,7 +16,7 @@ class _ProclamationContainer extends State<ProclamationsContainer> {
   _getProclamations() async {
     var db = DBService("NvPUvkMOvGFqajAp86i9");
 
-    await db.getVillageProclamations().then((response) {
+    db.getVillageProclamations().then((response) {
       setState(() {
         proclamations = response;
         isLoading = false;

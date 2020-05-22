@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/events/editableEventsContainer.dart';
 import 'package:pueblos_app/components/events/eventsContainer.dart';
 
-class configEventsScreen extends StatefulWidget {
+import 'addEventScreen.dart';
+
+class ConfigEventsScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _configEventsScreenState();
+  State<StatefulWidget> createState() => _ConfigEventsScreenState();
 }
 
-class _configEventsScreenState extends State<configEventsScreen> {
+class _ConfigEventsScreenState extends State<ConfigEventsScreen> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -19,6 +21,14 @@ class _configEventsScreenState extends State<configEventsScreen> {
             "Abandonar edición",
             //style: TextStyle(color: Colors.white),
           )),
+          floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AddEventScreen()));
+      },
+      child: Icon(Icons.add),
+      backgroundColor: Color(0xFF29BF79),
+      ),
       body: Container(
         padding: EdgeInsets.all(20),
         child: EditableEventsContainer(),

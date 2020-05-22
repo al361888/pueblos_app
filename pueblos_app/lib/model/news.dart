@@ -10,7 +10,7 @@ class News {
       this.publishDate);
 
   News.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : id = json['wid'],
         image = json['image'],
         name = json['name'],
         description = json['description'],

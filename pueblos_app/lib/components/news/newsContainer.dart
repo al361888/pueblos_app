@@ -15,24 +15,41 @@ class NewsContainer extends StatefulWidget {
 class _NewsContainerState extends State<NewsContainer> {
   var news = List<News>();
   bool isLoading = true;
-
   String _domain = "";
+  String _activeVillageId = "";
+  String token;
 
   _getNews() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
-    _domain = userPrefs.getString('activeDomain');
+    _activeVillageId = userPrefs.getString('activeVillageId');
+    token = userPrefs.getString('token');
+    _domain = "https://vueltalpueblo.wisclic.es/";
 
-    ApiCalls(_domain).getNews().then((response) {
-      if (response.statusCode == 200) {
-        setState(() {
-          Iterable list = json.decode(response.body)['data'];
-          news = list.map((model) => News.fromJson(model)).toList();
-        });
-        isLoading = false;
-      } else {
-        _getNews();
-      }
-    });
+    if (token == null) {
+      ApiCalls().getNews(_activeVillageId).then((response) {
+        if (response.statusCode == 200) {
+          setState(() {
+            Iterable list = json.decode(response.body)['data'];
+            news = list.map((model) => News.fromJson(model)).toList();
+          });
+          isLoading = false;
+        } else {
+          _getNews();
+        }
+      });
+    } else {
+      ApiCalls().getNewsLogged(_activeVillageId, token).then((response) {
+        if (response.statusCode == 200) {
+          setState(() {
+            Iterable list = json.decode(response.body)['data'];
+            news = list.map((model) => News.fromJson(model)).toList();
+          });
+          isLoading = false;
+        } else {
+          _getNews();
+        }
+      });
+    }
   }
 
   @override

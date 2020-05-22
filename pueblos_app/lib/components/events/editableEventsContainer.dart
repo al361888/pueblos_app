@@ -7,7 +7,6 @@ import 'package:pueblos_app/model/event.dart';
 import 'package:pueblos_app/apiCalls.dart';
 
 import 'editableEventCard.dart';
-import 'eventCard.dart';
 
 class EditableEventsContainer extends StatefulWidget {
   @override
@@ -18,11 +17,15 @@ class _EditableEventsContainerState extends State<EditableEventsContainer> {
   var events = List<Event>();
   bool isLoading = true;
   String _domain = "";
+  String _activeVillageId ="";
+  String token;
 
   _getEvents() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
-    _domain = userPrefs.getString('activeDomain');
-    ApiCalls(_domain).getEvents().then((response) {
+    _activeVillageId = userPrefs.getString('activeVillageId');
+    token = userPrefs.getString('token');
+    _domain = "https://vueltalpueblo.wisclic.es/";
+    ApiCalls().getManagedEvents(_activeVillageId, token).then((response) {
       if (response.statusCode == 200) {
         setState(() {
           Iterable list = json.decode(response.body)['data'];

@@ -5,12 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class AddNewsScreen extends StatefulWidget {
+class EditEventScreen extends StatefulWidget{
+  String eventId;
+
+  EditEventScreen(String eventId) {
+    this.eventId = eventId;
+  }
+
   @override
-  _AddNewsScreenState createState() => _AddNewsScreenState();
+  _EditEventScreenState createState() => _EditEventScreenState();
 }
 
-class _AddNewsScreenState extends State<AddNewsScreen> {
+class _EditEventScreenState extends State<EditEventScreen> {
   bool isLoading;
   String token;
   String villageWid;
@@ -34,13 +40,18 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String url = "https://vueltalpueblo.wisclic.es/m/"+ villageWid +"/news/create";
+    String eventId = widget.eventId;
+    String url = "https://vueltalpueblo.wisclic.es/m/" +
+        villageWid +
+        "/events/" +
+        eventId +
+        "/edit";
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           title: Text(
-            "Crear noticia",
+            "Editar Evento",
             //style: TextStyle(color: Colors.white),
           )),
       body: Stack(
@@ -49,7 +60,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
             javascriptMode: JavascriptMode.unrestricted,
             gestureNavigationEnabled: true,
             javascriptChannels: <JavascriptChannel>[
-              _newsAddedChannel(context),
+              _webViewChannel(context),
             ].toSet(),
             onPageFinished: (String url) {
                setState(() {
@@ -70,7 +81,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
     );
   }
 
-  JavascriptChannel _newsAddedChannel(BuildContext context) {
+  JavascriptChannel _webViewChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'fcc',
         onMessageReceived: (JavascriptMessage message) {
@@ -78,13 +89,11 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
           MessageInfo newsInfo = MessageInfo.fromJson(info);
           print(newsInfo.success);
           if (newsInfo.success) {
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia añadida correctamente."),));
             Navigator.pop(context);
           }
         });
   }
 }
-
 class MessageInfo {
   final bool success;
 

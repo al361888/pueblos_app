@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/screens/events/editEventScreen.dart';
 import 'package:pueblos_app/screens/eventInscriptionsScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../apiCalls.dart';
 import 'detailedEvent.dart';
 
 class EditableEventCard extends StatefulWidget {
@@ -42,10 +45,27 @@ class EditableEventCard extends StatefulWidget {
 }
 
 class _EditableEventCardState extends State<EditableEventCard> {
+  String activeVillageWid;
+  String token;
+
+   @override
+  initState() {
+    super.initState();
+    _getVillageId();
+  }
+
+  _getVillageId() async {
+    SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      activeVillageWid = userPrefs.getString('activeVillageId');
+      token = userPrefs.getString('token');
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     String id = widget.id;
-    String image = widget.domain + "/apps/files/file/" + widget.image;
+    String image = widget.domain + "/files/" + widget.image;
     String name = widget.name;
     String description = widget.description;
     String eventDate = _getProperDateFormat(widget.eventDate);
@@ -187,9 +207,17 @@ class _EditableEventCardState extends State<EditableEventCard> {
                             Navigator.push(context,
             MaterialPageRoute(builder: (context) => EventInscriptionsScreen()));
                           } else if (value == 2) {
-                            print("Ocultar evento");
+                            bool success = _hideEvent(activeVillageWid, widget.id, widget.active, token);
+                              print(success);
+                              if(success){
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia ocultada correctamente")));
+                                Navigator.pop(context);
+                              }else{
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error al ocultar la noticia")));
+                              }
                           } else if (value == 3) {
-                            print("Editar evento");
+                            Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditEventScreen(id)));
                           } else if (value == 4) {
                             print("Eliminar evento");
                           }
@@ -201,6 +229,14 @@ class _EditableEventCardState extends State<EditableEventCard> {
         ),
       ),
     );
+  }
+  bool _hideEvent(String activeVillageWid, String id, String active, String token){
+    bool res = false;
+    ApiCalls().hideEvent(activeVillageWid, widget.id, widget.active, token).then((result) {
+      print("RESULT???? "+ (result?"true":"false"));
+      return result;
+    });
+    return res;
   }
 }
 

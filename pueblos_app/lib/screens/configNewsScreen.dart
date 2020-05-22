@@ -5,12 +5,12 @@ import 'package:pueblos_app/components/news/newsElement.dart';
 
 import 'addNewsScreen.dart';
 
-class configNewsScreen extends StatefulWidget {
+class ConfigNewsScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _configNewsScreenState();
+  State<StatefulWidget> createState() => _ConfigNewsScreenState();
 }
 
-class _configNewsScreenState extends State<configNewsScreen> {
+class _ConfigNewsScreenState extends State<ConfigNewsScreen> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

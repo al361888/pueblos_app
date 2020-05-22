@@ -1,37 +1,36 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/apiCalls.dart';
-import 'package:pueblos_app/authService.dart';
 import 'package:pueblos_app/model/village.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../apiCalls.dart';
 import 'homeScreen.dart';
-import 'loginScreen.dart';
-import 'registerScreen.dart';
 
-class VillageSelector extends StatefulWidget {
+class RegisteredVillageSelector extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _VillageSelectorState();
+  _RegisteredVillageSelectorState createState() =>
+      _RegisteredVillageSelectorState();
 }
 
 class _VillageData {
   String villageName;
 }
 
-class _VillageSelectorState extends State<VillageSelector> {
-  final _formKeyVillage = GlobalKey<FormState>();
+class _RegisteredVillageSelectorState extends State<RegisteredVillageSelector> {
+  final _formKeyVillage1 = GlobalKey<FormState>();
   _VillageData _villageData = _VillageData();
   String selectedVillage;
   var villages = List<Village>();
-  List<String> villageNames= [];
+  List<String> villageNames = [];
 
-  _getVillages() async{
+  _getVillages() async {
     ApiCalls().getVillages().then((response) {
       if (response.statusCode == 200) {
         setState(() {
           Iterable list = json.decode(response.body)['data'];
           villages = list.map((model) => Village.fromJson(model)).toList();
-          for(Village village in villages){
+          for (Village village in villages) {
             villageNames.add(village.name);
           }
         });
@@ -47,17 +46,25 @@ class _VillageSelectorState extends State<VillageSelector> {
     _getVillages();
   }
 
+  dispose() {
+    super.dispose();
+  }
+
   _onPressed() async {
-    AuthService authService = AuthService();
-    for(Village v in villages){
-      if (v.name == selectedVillage){
-        await authService.loginWithoutAccount(v).then((result) {
-      Navigator.push(
+    var choosedVillage;
+
+    for (Village v in villages) {
+      if (v.name == selectedVillage) {
+        choosedVillage = v;
+        final userPrefs = await SharedPreferences.getInstance();
+        userPrefs.setString('activeVillageName', choosedVillage.name);
+        userPrefs.setString('activeVillageId', choosedVillage.id);
+        userPrefs.setString('activeVillageImage', choosedVillage.image);
+        userPrefs.setString('activeVillageUrl', choosedVillage.nameUrl);
+        Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    });
       }
     }
-    
   }
 
   @override
@@ -106,7 +113,7 @@ class _VillageSelectorState extends State<VillageSelector> {
                           primaryColor: Colors.white,
                           canvasColor: Color(0xBB090909)),
                       child: Form(
-                        key: _formKeyVillage,
+                        key: _formKeyVillage1,
                         autovalidate: true,
                         child: Column(
                           children: <Widget>[
@@ -151,15 +158,17 @@ class _VillageSelectorState extends State<VillageSelector> {
                               child: RaisedButton(
                                 color: Theme.of(context).primaryColor,
                                 onPressed: () {
-                                  if (selectedVillage!=null) {
+                                  if (selectedVillage != null) {
                                     _onPressed();
-                                  }else{
-                                    showDialog(context: context, builder: (_) => validationWidget());
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => validationWidget());
                                   }
                                 },
                                 child: Container(
                                     child: Text(
-                                  "Continuar sin cuenta",
+                                  "Continuar",
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.white),
                                 )),
@@ -172,64 +181,6 @@ class _VillageSelectorState extends State<VillageSelector> {
                         ),
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 25)),
-                    Container(
-                        child: Text("- O -",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold))),
-                    Padding(padding: EdgeInsets.only(top: 25)),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          height: 50,
-                          child: OutlineButton(
-                            borderSide: BorderSide(color: Colors.white),
-                            color: Color(0x77090909),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterScreen()));
-                            },
-                            child: Container(
-                                child: Text(
-                              "Registrarse",
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            )),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0))),
-                          ),
-                        ),
-                        Container(
-                          height: 50,
-                          child: RaisedButton(
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
-                            },
-                            child: Container(
-                                child: Text(
-                              "Iniciar Sesión",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Theme.of(context).primaryColor),
-                            )),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0))),
-                          ),
-                        )
-                      ],
-                    )
                   ],
                 ),
               ),
@@ -239,6 +190,7 @@ class _VillageSelectorState extends State<VillageSelector> {
       ),
     );
   }
+
   Widget validationWidget() {
     return AlertDialog(
       title: Center(

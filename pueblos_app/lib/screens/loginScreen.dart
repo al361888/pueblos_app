@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/homeScreen.dart';
 import 'package:pueblos_app/authService.dart';
+import 'package:pueblos_app/screens/registeredVillageSelector.dart';
 import 'package:pueblos_app/screens/villageSelector.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'registerScreen.dart';
 
@@ -23,12 +25,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _onPressed() async {
     AuthService authService = AuthService();
+    final userPrefs = await SharedPreferences.getInstance();
+    String activeVillageName = userPrefs.getString('activeVillageName');
     await authService.login(_userData.username, _userData.pass).then((result) {
       _logged = result;
     });
     if (_logged) {
-      Navigator.push(
+      if(activeVillageName!=null){
+        Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      }else{
+        Navigator.push(
+          context, MaterialPageRoute(builder: (context) => RegisteredVillageSelector()));
+      }
+      
     } else {
       wrongPass = true;
       showDialog(context: context, builder: (_) => validationWidget());

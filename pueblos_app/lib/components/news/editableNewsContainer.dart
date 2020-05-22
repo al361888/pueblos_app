@@ -17,13 +17,18 @@ class _EditableNewsContainerState extends State<EditableNewsContainer> {
   bool isLoading = true;
 
   String _domain = "";
+  String _activeVillageId = "";
+  String token;
 
   _getNews() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
-    _domain = userPrefs.getString('activeDomain');
+    _activeVillageId = userPrefs.getString('activeVillageId');
+    _domain = "https://vueltalpueblo.wisclic.es";
+    token = userPrefs.getString('token');
 
-    ApiCalls(_domain).getNews().then((response) {
+    ApiCalls().getManagedNews(_activeVillageId, token).then((response) {
       if (response.statusCode == 200) {
+        print(response.body);
         setState(() {
           Iterable list = json.decode(response.body)['data'];
           news = list.map((model) => News.fromJson(model)).toList();
@@ -63,7 +68,8 @@ class _EditableNewsContainerState extends State<EditableNewsContainer> {
                             news[index].name,
                             news[index].description,
                             news[index].publishDate,
-                            _domain);
+                            _domain,
+                            news[index].active);
                       }),
                 ),
               ],

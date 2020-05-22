@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pueblos_app/model/village.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -10,9 +11,12 @@ import 'model/user.dart';
 class AuthService {
   // Login
   Future<bool> login(String user, String pass) async {
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    String password = stringToBase64.encode(pass); 
+
     var uriResponse = await http.post(
-        'https://mas.villanuevadeviver.es/api/login',
-        body: {'user': user, 'pass': pass});
+        'https://vueltalpueblo.wisclic.es/api/loginc',
+        body: {'user': user, 'pass': password});
 
     if (uriResponse.statusCode == 200) {
       print(uriResponse.body.toString());
@@ -22,31 +26,24 @@ class AuthService {
 
       var convertToData = json.decode(uriResponse.body);
       var user = User.fromJson(convertToData);
-
+      
       var email = user.email;
       var name = user.name;
-      var activeVillage = user.activeVillage;
-      var activeName = user.activeName;
-      var activeDomain = user.activeDomain;
-
-      print(activeVillage);
-      print(activeName);
-      print(activeDomain);
 
       // set values into sharedPreferences
-      userPrefs.setString('user', name);
+      userPrefs.setString('userName', name);
       userPrefs.setString('email', email);
-      userPrefs.setString('activeVillage', activeVillage);
-      userPrefs.setString('activeName', activeName);
-      userPrefs.setString('activeDomain', activeDomain);
+      userPrefs.setString('token', user.token);
+      print(user.managedVillages);
+      userPrefs.setString('managedVillages', json.encode(user.managedVillages));
 
       //Store username and password locally
       final storage = new FlutterSecureStorage();
       await storage.write(key: 'username', value: name);
       await storage.write(key: 'password', value: pass);
 
-      MessageHandler messageHandler = MessageHandler();
-      messageHandler.fcmSubscribe("VillanuevaDeViver");
+      // MessageHandler messageHandler = MessageHandler(); ====================================
+      // messageHandler.fcmSubscribe("VillanuevaDeViver"); ====================================
 
       return true;
     } else {
@@ -60,7 +57,7 @@ class AuthService {
   Future<void> logout() async {
     // Simulate a future for response after 1 second.
     final userPrefs = await SharedPreferences.getInstance();
-    userPrefs.remove("user");
+    userPrefs.remove("userName");
     userPrefs.remove("email");
 
     final storage = new FlutterSecureStorage();
@@ -85,12 +82,13 @@ class AuthService {
     }
   }
 
-  Future<void> loginWithoutAccount(String selectedVillage) async {
-    final storage = new FlutterSecureStorage();
-
-    await storage.write(key: "village", value: selectedVillage);
-
-    MessageHandler messageHandler = MessageHandler();
-    messageHandler.fcmSubscribe("VillanuevaDeViver");
+  Future<void> loginWithoutAccount(Village selectedVillage) async {
+    final userPrefs = await SharedPreferences.getInstance();
+    userPrefs.setString('activeVillageName', selectedVillage.name);
+    userPrefs.setString('activeVillageId', selectedVillage.id);
+    userPrefs.setString('activeVillageImage', selectedVillage.image);
+    userPrefs.setString('activeVillageUrl', selectedVillage.nameUrl);
+    // MessageHandler messageHandler = MessageHandler();
+    // messageHandler.fcmSubscribe("VillanuevaDeViver");
   }
 }
