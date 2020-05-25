@@ -24,5 +24,6 @@ class User{
     'username': username,
     'managedVillages': managedVillages
   };
+
 }
 

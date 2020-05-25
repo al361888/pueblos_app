@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/authService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -23,6 +24,7 @@ class _MakeInscriptionScreenState extends State<MakeInscriptionScreen> {
     super.initState();
     isLoading = true;
     _getData();
+    AuthService().refreshToken();
   } 
 
   _getData() async {

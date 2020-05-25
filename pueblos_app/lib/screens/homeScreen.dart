@@ -44,6 +44,7 @@ class _HomeScreen extends State<HomeScreen> {
 
       _activeVillageName = userPrefs.getString('activeVillageName');
     });
+    AuthService().refreshToken();
   }
 
   _isVillageAdmin() async{

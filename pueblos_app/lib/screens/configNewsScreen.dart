@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/news/editableNewsContainer.dart';
-import 'package:pueblos_app/components/news/newsContainer.dart';
-import 'package:pueblos_app/components/news/newsElement.dart';
 
+import '../authService.dart';
 import 'addNewsScreen.dart';
 
 class ConfigNewsScreen extends StatefulWidget {
@@ -11,9 +10,15 @@ class ConfigNewsScreen extends StatefulWidget {
 }
 
 class _ConfigNewsScreenState extends State<ConfigNewsScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    AuthService().refreshToken();
+  }
+  
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.transparent,

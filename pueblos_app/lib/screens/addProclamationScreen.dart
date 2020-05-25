@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/homeScreen.dart';
 
+import '../authService.dart';
 import '../dbService.dart';
 
 class AddProclamationScreen extends StatefulWidget {
@@ -9,6 +10,12 @@ class AddProclamationScreen extends StatefulWidget {
 }
 
 class _AddProclamationScreenState extends State<AddProclamationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AuthService().refreshToken();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

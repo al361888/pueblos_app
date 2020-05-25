@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/authService.dart';
 import 'package:pueblos_app/components/inscriptions/myInscriptionsContainer.dart';
 
 class MyInscriptionsScreen extends StatefulWidget{
@@ -7,6 +8,11 @@ class MyInscriptionsScreen extends StatefulWidget{
   }
   
   class _MyInscriptionsScreenState extends State<MyInscriptionsScreen>{
+    @override
+  void initState() {
+    super.initState();
+    AuthService().refreshToken();
+  }
 
   @override
   Widget build(BuildContext context) {

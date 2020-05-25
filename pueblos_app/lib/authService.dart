@@ -12,7 +12,7 @@ class AuthService {
   // Login
   Future<bool> login(String user, String pass) async {
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
-    String password = stringToBase64.encode(pass); 
+    String password = stringToBase64.encode(pass);
 
     var uriResponse = await http.post(
         'https://vueltalpueblo.wisclic.es/api/loginc',
@@ -26,7 +26,7 @@ class AuthService {
 
       var convertToData = json.decode(uriResponse.body);
       var user = User.fromJson(convertToData);
-      
+
       var email = user.email;
       var name = user.name;
 
@@ -90,5 +90,27 @@ class AuthService {
     userPrefs.setString('activeVillageUrl', selectedVillage.nameUrl);
     // MessageHandler messageHandler = MessageHandler();
     // messageHandler.fcmSubscribe("VillanuevaDeViver");
+  }
+
+  void refreshToken() async {
+    final userPrefs = await SharedPreferences.getInstance();
+    String token = userPrefs.getString("token");
+    var arr = token.trim().split('.');
+    var exp = arr[1];
+
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    var res = stringToBase64.decode(base64.normalize(exp));
+ 
+    Map<String,dynamic> myJson = jsonDecode(res);
+    var expirationDate = myJson["exp"];
+
+    expirationDate = DateTime.fromMillisecondsSinceEpoch((expirationDate - 60)* 1000);
+
+    if(DateTime.now().isAfter(expirationDate)){
+      final _storage = FlutterSecureStorage();
+      String username = await _storage.read(key: 'username');
+      String password = await _storage.read(key: 'password');
+      login(username, password);
+    }
   }
 }

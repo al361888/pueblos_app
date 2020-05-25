@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../authService.dart';
+
 class AddNewsScreen extends StatefulWidget {
   @override
   _AddNewsScreenState createState() => _AddNewsScreenState();
@@ -22,6 +24,7 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
     super.initState();
     isLoading = true;
     _getToken();
+    AuthService().refreshToken();
   }
 
   _getToken() async {

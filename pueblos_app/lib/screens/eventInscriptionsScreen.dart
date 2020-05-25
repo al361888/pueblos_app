@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/inscriptions/inscriptionsContainer.dart';
 
+import '../authService.dart';
+
 class EventInscriptionsScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _EventInscriptionsScreenState();
 }
 
 class _EventInscriptionsScreenState extends State<EventInscriptionsScreen> {
+
+  @override
+  initState() {
+    super.initState();
+    AuthService().refreshToken();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

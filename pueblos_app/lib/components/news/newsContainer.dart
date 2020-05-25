@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/apiCalls.dart';
+import 'package:pueblos_app/authService.dart';
 import 'package:pueblos_app/model/news.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'imageNewsCard.dart';
@@ -56,6 +57,7 @@ class _NewsContainerState extends State<NewsContainer> {
   initState() {
     super.initState();
     _getNews();
+    AuthService().refreshToken();
   }
 
   dispose() {

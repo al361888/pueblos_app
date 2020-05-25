@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pueblos_app/authService.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +43,7 @@ class _EditableEventsContainerState extends State<EditableEventsContainer> {
   void initState() {
     super.initState();
     _getEvents();
+    AuthService().refreshToken();
   }
 
   @override
