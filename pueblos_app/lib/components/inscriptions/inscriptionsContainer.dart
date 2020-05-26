@@ -44,7 +44,7 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    _barcode != null ? print(_barcode.rawContent) : print("No hay codigo");
+    _barcode != null ? Scaffold.of(context).showSnackBar(SnackBar(content: Text(_barcode.rawContent))): print("No hay codigo");
     return Container(
       child: Column(
         children: <Widget>[

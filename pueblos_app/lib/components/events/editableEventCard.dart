@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/events/editEventScreen.dart';
-import 'package:pueblos_app/screens/eventInscriptionsScreen.dart';
+import 'package:pueblos_app/screens/inscriptions/eventInscriptionsScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../apiCalls.dart';
@@ -48,7 +48,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
   String activeVillageWid;
   String token;
 
-   @override
+  @override
   initState() {
     super.initState();
     _getVillageId();
@@ -61,7 +61,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
       token = userPrefs.getString('token');
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     String id = widget.id;
@@ -159,84 +159,111 @@ class _EditableEventCardState extends State<EditableEventCard> {
                 ),
               ),
               Expanded(
-                      child: PopupMenuButton<int>(
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 1,
-                            child: Row(
-                                children: <Widget>[
-                                  Icon(Icons.confirmation_number, color: Colors.grey),
-                                  Padding(padding: EdgeInsets.only(left: 10)),
-                                  Text("Ver Inscripciones", style: TextStyle(color:Color(0xFF1E2C41))),
-                                ],
-                              ),
-                          ),
-                          PopupMenuItem(
-                            value: 2,
-                            child: Row(
-                                children: <Widget>[
-                                  Icon(Icons.visibility_off, color: Colors.grey),
-                                  Padding(padding: EdgeInsets.only(left: 10)),
-                                  Text("Ocultar evento", style: TextStyle(color:Color(0xFF1E2C41))),
-                                ],
-                              ),
-                          ),
-                          PopupMenuItem(
-                            value: 3,
-                            child: Row(
-                                children: <Widget>[
-                                  Icon(Icons.edit, color: Colors.grey),
-                                  Padding(padding: EdgeInsets.only(left: 10)),
-                                  Text("Editar evento", style: TextStyle(color:Color(0xFF1E2C41))),
-                                ],
-                              ),
-                          ),
-                          PopupMenuItem(
-                            value: 4,
-                            child: Row(
-                                children: <Widget>[
-                                  Icon(Icons.delete, color: Colors.grey),
-                                  Padding(padding: EdgeInsets.only(left: 10)),
-                                  Text("Eliminar evento", style: TextStyle(color:Color(0xFF1E2C41))),
-                                ],
-                              ),
-                          ),
+                child: PopupMenuButton<int>(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.confirmation_number, color: Colors.grey),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          Text("Ver Inscripciones",
+                              style: TextStyle(color: Color(0xFF1E2C41))),
                         ],
-                        onSelected: (value) {
-                          if (value == 1) {
-                            Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EventInscriptionsScreen()));
-                          } else if (value == 2) {
-                            bool success = _hideEvent(activeVillageWid, widget.id, widget.active, token);
-                              print(success);
-                              if(success){
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia ocultada correctamente")));
-                                Navigator.pop(context);
-                              }else{
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error al ocultar la noticia")));
-                              }
-                          } else if (value == 3) {
-                            Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EditEventScreen(id)));
-                          } else if (value == 4) {
-                            print("Eliminar evento");
-                          }
-                        },
                       ),
-                    )
+                    ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.visibility_off, color: Colors.grey),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          Text("Ocultar evento",
+                              style: TextStyle(color: Color(0xFF1E2C41))),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 3,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.edit, color: Colors.grey),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          Text("Editar evento",
+                              style: TextStyle(color: Color(0xFF1E2C41))),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 4,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.delete, color: Colors.grey),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          Text("Eliminar evento",
+                              style: TextStyle(color: Color(0xFF1E2C41))),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 1) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EventInscriptionsScreen()));
+                    } else if (value == 2) {
+                      bool success = _hideEvent(
+                          activeVillageWid, widget.id, widget.active, token);
+                      print(success);
+                      if (success) {
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text("Evento ocultado")));
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/ConfigEvents', (Route<dynamic> route) => false);
+                      } else {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Error al ocultar el evento")));
+                      }
+                    } else if (value == 3) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditEventScreen(id)));
+                    } else if (value == 4) {
+                      if (_deleteEvent(activeVillageWid, widget.id, token)) {
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text("Evento eliminado")));
+                        Future.delayed(const Duration(seconds: 1), () => "1");
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/ConfigEvents', (Route<dynamic> route) => false);
+                      }
+                    }
+                  },
+                ),
+              )
             ],
           ),
         ),
       ),
     );
   }
-  bool _hideEvent(String activeVillageWid, String id, String active, String token){
-    bool res = false;
-    ApiCalls().hideEvent(activeVillageWid, widget.id, widget.active, token).then((result) {
-      print("RESULT???? "+ (result?"true":"false"));
-      return result;
+
+  bool _hideEvent(
+      String activeVillageWid, String id, String active, String token) {
+    ApiCalls()
+        .hideEvent(activeVillageWid, widget.id, widget.active, token)
+        .then((result) {
+      print("RESULT???? " + (result ? "true" : "false"));
     });
-    return res;
+    return true;
+  }
+
+  bool _deleteEvent(String activeVillageWid, String id, String token) {
+    ApiCalls().deleteEvent(activeVillageWid, widget.id, token).then((result) {
+      print("RESULT???? " + (result ? "true" : "false"));
+    });
+    return true;
   }
 }
 

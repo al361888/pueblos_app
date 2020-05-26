@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:pueblos_app/screens/addInscriptionScreen.dart';
+import 'package:pueblos_app/screens/inscriptions/addInscriptionScreen.dart';
 
 class DetailedEvent extends StatelessWidget {
   String id;

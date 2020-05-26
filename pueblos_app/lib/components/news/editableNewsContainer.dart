@@ -29,7 +29,6 @@ class _EditableNewsContainerState extends State<EditableNewsContainer> {
 
     ApiCalls().getManagedNews(_activeVillageId, token).then((response) {
       if (response.statusCode == 200) {
-        print(response.body);
         setState(() {
           Iterable list = json.decode(response.body)['data'];
           news = list.map((model) => News.fromJson(model)).toList();

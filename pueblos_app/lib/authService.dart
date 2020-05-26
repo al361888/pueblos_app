@@ -39,6 +39,7 @@ class AuthService {
 
       //Store username and password locally
       final storage = new FlutterSecureStorage();
+      await storage.write(key: 'email', value: email);
       await storage.write(key: 'username', value: name);
       await storage.write(key: 'password', value: pass);
 
@@ -108,9 +109,9 @@ class AuthService {
 
     if(DateTime.now().isAfter(expirationDate)){
       final _storage = FlutterSecureStorage();
-      String username = await _storage.read(key: 'username');
+      String email = await _storage.read(key: 'email');
       String password = await _storage.read(key: 'password');
-      login(username, password);
+      login(email, password);
     }
   }
 }

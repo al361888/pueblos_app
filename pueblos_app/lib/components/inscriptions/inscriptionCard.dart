@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pueblos_app/screens/specificInscriptionScreen.dart';
+import 'package:pueblos_app/screens/inscriptions/specificInscriptionScreen.dart';
 
 class InscriptionCard extends StatefulWidget {
   @override

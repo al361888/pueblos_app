@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:pueblos_app/screens/addNewsScreen.dart';
-import 'package:pueblos_app/screens/editNewsScreen.dart';
+import 'package:pueblos_app/screens/news/editNewsScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../apiCalls.dart';
@@ -35,10 +33,15 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
   String activeVillageWid;
   String token;
 
-   @override
+  @override
   initState() {
     super.initState();
     _getVillageId();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
   }
 
   _getVillageId() async {
@@ -48,6 +51,7 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
       token = userPrefs.getString('token');
     });
   }
+
   @override
   Widget build(BuildContext context) {
     String domain = widget.domain;
@@ -65,9 +69,11 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
           "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
     }
 
-    bool hidden = false;
-    if (widget.active=='0') {
-      hidden= true;
+    bool hidden;
+    if(widget.active == '0'){
+      hidden = true;
+    }else{
+      hidden = false;
     }
 
     return Hero(
@@ -135,9 +141,13 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                                       fontSize: 14),
                                 ),
                               ),
-                              widget.active=="0"?Container(child: Text("Oculta", style: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFF39EB3)))):Container(),
+                              widget.active == "0"
+                                  ? Container(
+                                      child: Text("Oculta",
+                                          style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              color: Color(0xFFF39EB3))))
+                                  : Container(),
                             ]),
                       ),
                       Container(
@@ -150,9 +160,11 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                                   Icon(Icons.visibility_off,
                                       color: Colors.grey),
                                   Padding(padding: EdgeInsets.only(left: 10)),
-                                  Text("Ocultar noticia",
+                                  hidden?Text("Visibilizar noticia",
                                       style:
-                                          TextStyle(color: Color(0xFF1E2C41))),
+                                          TextStyle(color: Color(0xFF1E2C41))):Text("Ocultar noticia",
+                                      style:
+                                          TextStyle(color: Color(0xFF1E2C41)))
                                 ],
                               ),
                             ),
@@ -183,19 +195,37 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                           ],
                           onSelected: (value) {
                             if (value == 1) {
-                              bool success = _hideNews(activeVillageWid, widget.id, widget.active, token);
+                              bool success = _hideNews(activeVillageWid,
+                                  widget.id, widget.active, token);
                               print(success);
-                              if(success){
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia ocultada correctamente")));
-                                Navigator.pop(context);
-                              }else{
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error al ocultar la noticia")));
+                              if (success) {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content:
+                                        Text("Noticia ocultada")));
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/ConfigNews',
+                                    (Route<dynamic> route) => false);
+                              } else {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content:
+                                        Text("Error al ocultar la noticia")));
                               }
                             } else if (value == 2) {
-                              Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EditNewsScreen(id)));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditNewsScreen(id)));
                             } else if (value == 3) {
-                              print("Eliminar noticia");
+                              if (_deleteNews(
+                                  activeVillageWid, widget.id, token)) {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Noticia eliminada correctamente")));
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/ConfigNews',
+                                    (Route<dynamic> route) => false);
+                              }
                             }
                           },
                         ),
@@ -207,12 +237,25 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
     );
   }
 
-  bool _hideNews(String activeVillageWid, String id, String active, String token){
+  bool _hideNews(
+      String activeVillageWid, String id, String active, String token) {
     bool res = false;
-    ApiCalls().hideNews(activeVillageWid, widget.id, widget.active, token).then((result) {
-      print("RESULT???? "+ (result?"true":"false"));
-      return result;
+    ApiCalls()
+        .hideNews(activeVillageWid, widget.id, widget.active, token)
+        .then((result) {
+      res = result;
     });
-    return res;
+    print(res);
+    return true;
+  }
+
+  bool _deleteNews(String activeVillageWid, String id, String token) {
+    var res;
+    ApiCalls().deleteNews(activeVillageWid, id, token).then((response) {
+      res=response;
+    });
+    print(res);
+    return true;
+    
   }
 }

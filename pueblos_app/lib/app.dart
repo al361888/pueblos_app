@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/authService.dart';
+import 'package:pueblos_app/screens/events/configEventsScreen.dart';
 import 'package:pueblos_app/screens/homeScreen.dart';
 import 'package:pueblos_app/screens/loginScreen.dart';
+import 'package:pueblos_app/screens/news/configNewsScreen.dart';
 import 'package:pueblos_app/screens/splashScreen.dart';
 import 'package:pueblos_app/screens/villageSelector.dart';
 
@@ -40,7 +42,9 @@ class App extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/LoginScreen': (BuildContext context) => LoginScreen(),
           '/HomeScreen': (BuildContext context) => HomeScreen(),
-          '/VillageSelector': (BuildContext context) => VillageSelector()
+          '/VillageSelector': (BuildContext context) => VillageSelector(),
+          '/ConfigNews': (BuildContext context) => ConfigNewsScreen(),
+          '/ConfigEvents': (BuildContext context) => ConfigEventsScreen(),
         },
       ),
     );

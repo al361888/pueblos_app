@@ -1,17 +1,52 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class DetailedInscription extends StatefulWidget {
+  String wid;
+  String eventWid;
+  String name;
+  String image;
+  String eventDate;
+  String extraData;
+  String quantity;
+  var participants;
+  var inscriptionFields;
+
+  DetailedInscription(
+      String wid,
+      String eventWid,
+      String name,
+      String image,
+      String eventDate,
+      String extraData,
+      String quantity,
+      var participants,
+      var inscriptionFields) {
+    this.wid = wid;
+    this.eventWid = eventWid;
+    this.name = name;
+    this.image = image;
+    this.eventDate = eventDate;
+    this.extraData = extraData;
+    this.quantity = quantity;
+    this.participants = participants;
+    this.inscriptionFields = inscriptionFields;
+  }
+
   @override
   State<StatefulWidget> createState() => _DetailedInscriptionState();
 }
 
 class _DetailedInscriptionState extends State<DetailedInscription> {
-  String name = "Ruta por el sendero nevado";
-  String eventDate = "21 de enero 2020";
-  String eventTime = "20:30";
-
   @override
   Widget build(BuildContext context) {
+    String name = widget.name;
+    String eventDate = widget.eventDate;
+    String image = widget.image;
+
+    var participants = widget.participants;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -31,7 +66,7 @@ class _DetailedInscriptionState extends State<DetailedInscription> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   child: Image.network(
-                    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80",
+                    image,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -45,22 +80,20 @@ class _DetailedInscriptionState extends State<DetailedInscription> {
             Padding(padding: EdgeInsets.only(top: 10)),
             Text(
               eventDate,
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.grey),
-            ),
-            Padding(padding: EdgeInsets.only(top: 10)),
-            Text(
-              eventTime,
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24, color: Colors.grey),
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24,
+                  color: Colors.grey),
             ),
             Padding(padding: EdgeInsets.only(top: 10)),
             Expanded(
               child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return CodeCard();
-              }
-              ),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: participants.length,
+                  itemBuilder: (context, index) {
+                    return CodeCard(
+                        participants[index], widget.inscriptionFields);
+                  }),
             )
           ],
         ),
@@ -70,15 +103,39 @@ class _DetailedInscriptionState extends State<DetailedInscription> {
 }
 
 class CodeCard extends StatelessWidget {
+  var participant;
+  String name;
+  String code;
+  String extraData;
+  var inscriptionFields;
+
+  CodeCard(var participant, var inscriptionFields) {
+    this.participant = participant;
+    this.name = participant["name"];
+    this.code = participant["code"];
+    this.extraData = participant["extraData"];
+    this.inscriptionFields = inscriptionFields;
+  }
+
   @override
   Widget build(BuildContext context) {
+    Map fields = json.decode(inscriptionFields);
+    var specificFields = fields['specificFields'];
+    Map userExtraData = json.decode(extraData);
+
+    String qr;
+
+    if(code != null){
+      qr = "https://chart.googleapis.com/chart?cht=qr&chs=360x360&chld=M&chl="+code;
+    }else{
+      qr = "https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101032/112815935-stock-vector-no-image-available-icon-flat-vector-illustration.jpg?ver=6";
+    }
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Image.network(
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
+          Image.network(qr,
             width: 350,
             height: 300,
           ),
@@ -87,26 +144,50 @@ class CodeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Nombre: ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        height: 1.5)),
-                Text("Es alergico: ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        height: 1.5)),
-                Text("Menu: ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        height: 1.5)),
+                Row(
+                  children: <Widget>[
+                    Text("Nombre: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            height: 1.5)),
+                    Text(name,
+                        style: TextStyle(
+                            fontSize: 18,
+                            height: 1.5)),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: inscriptionFieldsList(specificFields, userExtraData),
+                )
               ],
             ),
           )
         ],
       ),
     );
+  }
+
+  List<Widget> inscriptionFieldsList(var specificFields, var extraData) {
+    List<Widget> list = List();
+    for (var i in specificFields) {
+      list.add(Row(
+        children: <Widget>[
+          Text(
+            i["label"],
+            style:
+                TextStyle(fontWeight: FontWeight.w500, fontSize: 18, height: 1.5),
+          ),
+          Padding(padding: EdgeInsets.only(left:5)),
+          Text(
+            extraData[i["name"]],
+            style:
+                TextStyle(fontSize: 18, height: 1.5),
+          ),
+        ],
+      ));
+    }
+    return list;
   }
 }

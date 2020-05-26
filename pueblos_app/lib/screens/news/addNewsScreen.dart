@@ -5,20 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../authService.dart';
+import '../../authService.dart';
 
-class EditNewsScreen extends StatefulWidget {
-  String newsId;
 
-  EditNewsScreen(String newsId){
-    this.newsId = newsId;
-  }
 
+class AddNewsScreen extends StatefulWidget {
   @override
-  _EditNewsScreenState createState() => _EditNewsScreenState();
+  _AddNewsScreenState createState() => _AddNewsScreenState();
 }
 
-class _EditNewsScreenState extends State<EditNewsScreen> {
+class _AddNewsScreenState extends State<AddNewsScreen> {
   bool isLoading;
   String token;
   String villageWid;
@@ -43,7 +39,7 @@ class _EditNewsScreenState extends State<EditNewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String url = "https://vueltalpueblo.wisclic.es/m/"+ villageWid +"/news/"+widget.newsId +"/edit";
+    String url = "https://vueltalpueblo.wisclic.es/m/"+ villageWid +"/news/create";
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
@@ -87,7 +83,8 @@ class _EditNewsScreenState extends State<EditNewsScreen> {
           MessageInfo newsInfo = MessageInfo.fromJson(info);
           print(newsInfo.success);
           if (newsInfo.success) {
-            Navigator.pop(context);
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Noticia añadida correctamente."),));
+            Navigator.pushNamed(context, '/HomeScreen');
           }
         });
   }

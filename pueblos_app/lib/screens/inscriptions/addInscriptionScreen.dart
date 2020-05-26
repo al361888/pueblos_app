@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../authService.dart';
+
+import '../../authService.dart';
 import 'myInscriptionsScreen.dart';
 
 class AddInscriptionScreen extends StatefulWidget {

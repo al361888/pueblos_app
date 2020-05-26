@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/components/news/editableNewsContainer.dart';
 
-import '../authService.dart';
+import '../../authService.dart';
 import 'addNewsScreen.dart';
 
 class ConfigNewsScreen extends StatefulWidget {

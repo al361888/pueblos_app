@@ -11,9 +11,10 @@ import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../pueblos_icons.dart';
-import 'configNewsScreen.dart';
 import 'events/configEventsScreen.dart';
-import 'myInscriptionsScreen.dart';
+import 'inscriptions/myInscriptionsScreen.dart';
+import 'news/configNewsScreen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,12 +22,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   String _user = "";
   String _email = "";
   String _activeVillageName = "";
   bool notificationSwitch = false;
-  bool isVillageAdmin;
+  bool isVillageAdmin = false;
 
   @override
   void initState() {
@@ -47,11 +48,19 @@ class _HomeScreen extends State<HomeScreen> {
     AuthService().refreshToken();
   }
 
-  _isVillageAdmin() async{
+  _isVillageAdmin() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
-    print(userPrefs.getString('managedVillages'));
-    Map<String, dynamic> managedVillages =jsonDecode(userPrefs.getString('managedVillages'));
-    
+    Map<String, dynamic> managedVillages =
+        jsonDecode(userPrefs.getString('managedVillages'));
+    managedVillages.forEach((k, v) {
+      if ('$k' == userPrefs.getString('activeVillageId')) {
+        if (managedVillages['$k']['isAdmin'] == '1' || managedVillages['$k']['communities'][0]!=null) {
+          setState(() {
+            isVillageAdmin = true;
+          });
+        }
+      }
+    });
   }
 
   //Las opciones del BottomNavBar
@@ -69,31 +78,7 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //Boton flotante para añadir un nuevo bando
-    var addButton = FloatingActionButton(
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AddProclamationScreen()));
-      },
-      child: Icon(Icons.add),
-      backgroundColor: Color(0xFF29BF79),
-    );
-    var configNewsButton = FloatingActionButton(
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ConfigNewsScreen()));
-      },
-      child: Icon(Icons.settings),
-      backgroundColor: Color(0xFF29BF79),
-    );
-    var configEventsButton = FloatingActionButton(
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ConfigEventsScreen()));
-      },
-      child: Icon(Icons.settings),
-      backgroundColor: Color(0xFF29BF79),
-    );
+    String avatarImageUrl = "https://eu.ui-avatars.com/api/?name=" + _user;
 
     //Construccion de la pantalla
     return Scaffold(
@@ -119,18 +104,14 @@ class _HomeScreen extends State<HomeScreen> {
             onTap: () => _settingModalBottomSheet(context),
             child: CircleAvatar(
               radius: 24,
-              child: ClipOval(
-                  child: Image.network(
-                      "https://eu.ui-avatars.com/api/?name=" + _user)),
+              child: ClipOval(child: Image.network(avatarImageUrl)),
             ),
           ),
           Padding(padding: EdgeInsets.only(right: 20))
         ],
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      floatingActionButton: _selectedIndex == 0
-          ? addButton
-          : (_selectedIndex == 1 ? configNewsButton : configEventsButton),
+      floatingActionButton: getFAB(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -144,6 +125,44 @@ class _HomeScreen extends State<HomeScreen> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  //Construcción de los floating action buttons
+  Widget getFAB(int i) {
+    if (isVillageAdmin == false) {
+      return Container();
+    } else {
+      if (i == 0) {
+        return FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddProclamationScreen()));
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Color(0xFF29BF79),
+        );
+      } else if (i == 1) {
+        return FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ConfigNewsScreen()));
+          },
+          child: Icon(Icons.settings),
+          backgroundColor: Color(0xFF29BF79),
+        );
+      } else if (i == 2) {
+        return FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ConfigEventsScreen()));
+          },
+          child: Icon(Icons.settings),
+          backgroundColor: Color(0xFF29BF79),
+        );
+      }
+    }
   }
 
   //Construcción del modal que surge cuando tocamos la foto de perfil del usuario

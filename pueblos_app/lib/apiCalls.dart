@@ -43,6 +43,7 @@ class ApiCalls {
     return http.get(url);
   }
 
+  //Ocultar un evento
   Future<bool> hideEvent(
       String villageWid, String eventWid, String active, String token) async {
     String act;
@@ -68,6 +69,7 @@ class ApiCalls {
     }
   }
 
+  //Ocultar una noticia
   Future<bool> hideNews(
       String villageWid, String newsWid, String active, String token) async {
     String act;
@@ -91,5 +93,30 @@ class ApiCalls {
     } else {
       return false;
     }
+  }
+
+  //Obtener las inscripciones de un usuario
+  Future getMyInscriptions(String token) {
+    var url = baseUrl + "/api/user/inscriptions";
+    return http.get(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+  }
+
+  //Borrar una noticia
+  Future deleteNews(String villageWid, String newsWid, String token){
+    var url = baseUrl + "/api/"+ villageWid + "/news/"+ newsWid;
+    return http.delete(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+  }
+
+  //Borrar un evento 
+  Future deleteEvent(String villageWid, String eventWid, String token){
+    var url = baseUrl + "/api/"+ villageWid + "/events/"+ eventWid;
+    return http.delete(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+  }
+
+  //Inscritos a un evento
+  Future getEventInscriptions(String villageWid, String eventWid, String token){
+    var url = this.baseUrl + "/api/"+ villageWid + "/events/"+ eventWid+ "/inscriptions";
+    return http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
   }
 }
