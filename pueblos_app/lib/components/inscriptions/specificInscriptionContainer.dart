@@ -1,8 +1,39 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 
+import '../../authService.dart';
+
 class SpecificInscriptionContainer extends StatefulWidget {
+  String username;
+  String image;
+  String quantity;
+  String eventWid;
+  String eventDate;
+  String extraData;
+  var inscriptionFields;
+  var participants;
+
+  SpecificInscriptionContainer(
+      String name,
+      String image,
+      String quantity,
+      String eventWid,
+      String eventDate,
+      String extraData,
+      var inscriptionFields,
+      var participants) {
+    this.username = name;
+    this.image = image;
+    this.quantity = quantity;
+    this.eventWid = eventWid;
+    this.eventDate = eventDate;
+    this.extraData = extraData;
+    this.inscriptionFields = inscriptionFields;
+    this.participants = participants;
+  }
   @override
   State<StatefulWidget> createState() => _SpecificInscriptionContainerState();
 }
@@ -15,31 +46,81 @@ class Item {
     this.isConfirmed = false,
   });
 
-  String expandedValue;
+  var expandedValue;
   String headerValue;
   bool isExpanded;
   bool isConfirmed;
 }
 
-List<Item> generateItems(int numberOfItems) {
+List<Item> generateItems(
+    int numberOfItems, String extraData, var participants, var specificFields) {
   return List.generate(numberOfItems, (int index) {
-    int index1 = index + 1;
+    var participant = participants[index];
+    var partExtraData = participant['extraData'];
+    var dataMap = json.decode(partExtraData);
+
+    var list = List<Widget>();
+    for (var i in specificFields) {
+      String value;
+      if (dataMap[i["name"]] == null) {
+        value = "NO";
+      } else {
+        value = dataMap[i["name"]];
+      }
+      Widget row = Row(
+        children: <Widget>[
+          Text(
+            i["label"],
+            style: TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 18, height: 1.5),
+          ),
+          Padding(padding: EdgeInsets.only(left: 5)),
+          Text(
+            value,
+            style: TextStyle(fontSize: 18, height: 1.5),
+          ),
+        ],
+      );
+      list.add(row);
+    }
     return Item(
-      headerValue: 'Asistente $index1',
-      expandedValue: 'This is item number $index1',
+      headerValue: participant['name'],
+      expandedValue: list,
     );
   });
 }
 
 class _SpecificInscriptionContainerState
     extends State<SpecificInscriptionContainer> {
-  String inscriptionAsistants = '5';
-  List<Item> _data = generateItems(4);
   ScanResult _barcode;
+  var _data;
+  Map fields;
+  var specificFields;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthService().refreshToken();
+    setState(() {
+      fields = json.decode(widget.inscriptionFields);
+      specificFields = fields['specificFields'];
+      _data = generateItems(int.parse(widget.quantity), widget.extraData,
+          widget.participants, specificFields);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    _barcode!=null?print(_barcode.rawContent):print("No hay codigo");
+    String inscriptionAsistants = widget.quantity;
+
+    String image = widget.image;
+    if (image == null) {
+      image = "https://eu.ui-avatars.com/api/?name=" + widget.username;
+    } else {
+      image = "https://vueltalpueblo.wisclic.es/files/" + image;
+    }
+
+    _barcode != null ? print(_barcode.rawContent) : print("No hay codigo");
     return SingleChildScrollView(
         child: Column(children: <Widget>[
       Container(
@@ -62,12 +143,12 @@ class _SpecificInscriptionContainerState
             Padding(padding: EdgeInsets.only(left: 10)),
             Container(
               child: IconButton(
-                    icon: Icon(
-                      Icons.center_focus_weak,
-                      size: 32,
-                    ),
-                    onPressed: scan,
-                  ),
+                icon: Icon(
+                  Icons.center_focus_weak,
+                  size: 32,
+                ),
+                onPressed: scan,
+              ),
             )
           ],
         ),
@@ -80,9 +161,7 @@ class _SpecificInscriptionContainerState
             decoration: new BoxDecoration(
                 shape: BoxShape.circle,
                 image: new DecorationImage(
-                    fit: BoxFit.fill,
-                    image:
-                        new NetworkImage("https://i.imgur.com/BoN9kdC.png")))),
+                    fit: BoxFit.fill, image: new NetworkImage(image)))),
         Padding(padding: EdgeInsets.only(left: 20)),
         Expanded(
           child: Column(
@@ -90,20 +169,20 @@ class _SpecificInscriptionContainerState
               children: <Widget>[
                 Container(
                   child: Text(
-                    "Carl Johnson",
+                    widget.username,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
                 Container(
                   child: Text(
-                    "Carl Johnson",
+                    widget.username,
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(top: 10)),
                 Container(
                   child: Text(
-                    "21 de enero 2020",
+                    widget.eventDate,
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
@@ -115,7 +194,10 @@ class _SpecificInscriptionContainerState
         alignment: Alignment.centerLeft,
         child: Text(
           inscriptionAsistants + " Asistentes",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(0xFF1E2C41)),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: Color(0xFF1E2C41)),
         ),
       ),
       Padding(padding: EdgeInsets.only(top: 20)),
@@ -152,7 +234,9 @@ class _SpecificInscriptionContainerState
                       Padding(padding: EdgeInsets.only(left: 10)),
                       Text(
                         item.headerValue,
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E2C41)),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1E2C41)),
                       ),
                     ],
                   ),
@@ -163,12 +247,14 @@ class _SpecificInscriptionContainerState
               child: Column(
                 children: <Widget>[
                   Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      alignment: Alignment.centerLeft,
-                      child: Text(item.expandedValue,
-                          style: TextStyle(fontSize: 16))),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      children: item.expandedValue,
+                    ),
+                  ),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: EdgeInsets.symmetric(vertical: 20),
                     child: RaisedButton(
                         color: Color(0xFFDF4674),
                         child: Container(
@@ -195,9 +281,9 @@ class _SpecificInscriptionContainerState
       ),
     );
   }
+
   Future scan() async {
     try {
-
       var result = await BarcodeScanner.scan();
 
       setState(() => this._barcode = result);

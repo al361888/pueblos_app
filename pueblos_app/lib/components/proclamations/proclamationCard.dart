@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProclamationCard extends StatefulWidget {
   String title;
@@ -20,12 +21,33 @@ class ProclamationCard extends StatefulWidget {
 class _ProclamationCardState extends State<ProclamationCard> {
   String tiempoTarjeta = calculateTimeDiff();
 
-  Image escudoComunidad;
+  String villageImage;
+
+  @override
+  initState() {
+    super.initState();
+    _getVillageImage();
+  }
+
+  _getVillageImage() async{
+    final userPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      villageImage = userPrefs.getString('activeVillageImage');
+    });
+    
+  }
+
+  dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     String title = widget.title;
     String description = widget.description;
+    if(villageImage ==null){
+      villageImage = "https://lh3.googleusercontent.com/proxy/9LmT_UV-yynPSUv28V9ikbLzZm5VhEWHjzXgiGkBTwlR85HXzAaA2gecdFreQ0lgFWnQbgmBzXHvGo__VRl95xZ-mIXEZNA";
+    }
 
     return Container(
       child: Card(
@@ -40,7 +62,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Column(children: <Widget>[
-                    Image.asset("assets/images/escudo.png",
+                    Image.network(villageImage,
                         width: 60, height: 60),
                     Padding(padding: EdgeInsets.all(10.0)),
                     Text(
@@ -77,7 +99,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
                 Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(top: 15, left: 15, right: 15),
-                    child: Image.asset("assets/images/escudo.png",
+                    child: Image.network(villageImage,
                         width: 40, height: 40),
                   ),
                   Flexible(

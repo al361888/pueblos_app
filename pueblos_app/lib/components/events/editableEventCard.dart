@@ -211,7 +211,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => EventInscriptionsScreen()));
+                              builder: (context) => EventInscriptionsScreen(id)));
                     } else if (value == 2) {
                       bool success = _hideEvent(
                           activeVillageWid, widget.id, widget.active, token);

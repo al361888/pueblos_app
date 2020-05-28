@@ -8,8 +8,10 @@ class Inscription{
   String quantity;
   var participants;
   var inscriptionFields;
+  String userName;
+  String userImage;
 
-  Inscription(this.wid, this.eventWid, this.name, this.image, this.eventDate, this.extraData, this.quantity, this.participants, this.inscriptionFields);
+  Inscription(this.wid, this.eventWid, this.name, this.image, this.eventDate, this.extraData, this.quantity, this.participants, this.inscriptionFields, this.userName, this.userImage);
 
   Inscription.fromJson(Map<String, dynamic> json)
       : wid = json['wid'],
@@ -20,5 +22,8 @@ class Inscription{
       extraData = json['extraData'],
       quantity = json['quantity'],
       participants = json['participants'],
-      inscriptionFields = json['inscriptionFields'];
+      inscriptionFields = json['inscriptionFields'],
+      userName = json['userName'],
+      userImage = json['userImage'];
+
 }

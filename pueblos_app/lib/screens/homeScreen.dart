@@ -6,15 +6,15 @@ import 'package:pueblos_app/authService.dart';
 import 'package:pueblos_app/components/events/eventsContainer.dart';
 import 'package:pueblos_app/components/news/newsContainer.dart';
 import 'package:pueblos_app/components/proclamations/proclamationsContainer.dart';
-import 'package:pueblos_app/model/user.dart';
+import 'package:pueblos_app/model/village.dart';
 import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../apiCalls.dart';
 import '../pueblos_icons.dart';
 import 'events/configEventsScreen.dart';
 import 'inscriptions/myInscriptionsScreen.dart';
 import 'news/configNewsScreen.dart';
-
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -26,6 +26,7 @@ class _HomeScreen extends State<HomeScreen> {
   String _user = "";
   String _email = "";
   String _activeVillageName = "";
+  String activeVillageImage;
   bool notificationSwitch = false;
   bool isVillageAdmin = false;
 
@@ -44,6 +45,8 @@ class _HomeScreen extends State<HomeScreen> {
       _email = (userPrefs.getString('email') ?? 'No email');
 
       _activeVillageName = userPrefs.getString('activeVillageName');
+      activeVillageImage = userPrefs.getString('activeVillageImage');
+      
     });
     AuthService().refreshToken();
   }
@@ -54,7 +57,8 @@ class _HomeScreen extends State<HomeScreen> {
         jsonDecode(userPrefs.getString('managedVillages'));
     managedVillages.forEach((k, v) {
       if ('$k' == userPrefs.getString('activeVillageId')) {
-        if (managedVillages['$k']['isAdmin'] == '1' || managedVillages['$k']['communities'][0]!=null) {
+        if (managedVillages['$k']['isAdmin'] == '1' ||
+            managedVillages['$k']['communities'][0] != null) {
           setState(() {
             isVillageAdmin = true;
           });
@@ -220,11 +224,6 @@ class _HomeScreen extends State<HomeScreen> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.inbox),
-                  title: Text("Mis Facturas"),
-                  onTap: () => {},
-                ),
-                ListTile(
                   leading: Icon(Icons.close),
                   title: Text("Cerrar sesión"),
                   onTap: () => {
@@ -255,60 +254,232 @@ class SettingVillageModalBottom extends StatefulWidget {
 
 class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
   bool _switchValue;
+  String activeVillage;
+  String activeVillageImage;
+  String activeVillageImageUrl;
 
   @override
   initState() {
     super.initState();
     _switchValue = widget.switchValue;
+    _getVillages();
   }
 
   dispose() {
     super.dispose();
   }
 
+  _getVillages() async {
+    SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      activeVillage = (userPrefs.getString('activeVillageName'));
+      activeVillageImage = (userPrefs.getString('activeVillageImage'));
+      if (activeVillageImage != null) {
+        activeVillageImageUrl = "http://vueltalpueblo.es/files/"+ activeVillageImage;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (activeVillageImageUrl == null) {
+      activeVillageImage =
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
+    }
+    //lA IMAGEN NO VA, DE MOMENTO CARGA UNA POR DEFECTO
     return Container(
-      height: 300,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.all(20),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.landscape),
-                  Padding(padding: EdgeInsets.only(left: 10)),
-                  Text(
-                    "Nombre del pueblo",
+      height: MediaQuery.of(context).size.height * 0.35,
+      color: Color(0xFF737373),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: new BorderRadius.only(
+                topLeft: const Radius.circular(20),
+                topRight: const Radius.circular(20))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                padding: EdgeInsets.all(20),
+                child: Row(
+                  children: <Widget>[
+                    Image.network(
+                      "https://lh3.googleusercontent.com/proxy/9LmT_UV-yynPSUv28V9ikbLzZm5VhEWHjzXgiGkBTwlR85HXzAaA2gecdFreQ0lgFWnQbgmBzXHvGo__VRl95xZ-mIXEZNA",
+                      height: 50,
+                      width: 50,
+                      fit: BoxFit.cover,
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 10)),
+                    Text(
+                      activeVillage,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: Colors.grey),
+                    ),
+                  ],
+                )),
+            Divider(thickness: 1),
+            Padding(padding: EdgeInsets.only(top: 10)),
+            Container(
+                padding: EdgeInsets.only(left: 20),
+                child: Text("Recibir notificaciones",
+                    style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 16))),
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Switch(
+                value: _switchValue,
+                onChanged: (value) {
+                  setState(() {
+                    _switchValue = value;
+                    print(_switchValue);
+                  });
+                },
+                activeTrackColor: Color(0xFF0EB768),
+                activeColor: Colors.white,
+              ),
+            ),
+            ListTile(
+                onTap: () {
+                  _villageSelectorModalSheet(context);
+                },
+                title: Text("Cambiar de pueblo",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        color: Colors.grey),
-                  ),
-                ],
-              )),
-          Divider(thickness: 1),
-          Padding(padding: EdgeInsets.only(top: 10)),
-          Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Text("Recibir notificaciones",
-                  style: TextStyle(fontWeight: FontWeight.w500))),
-          Container(
-            child: Switch(
-              value: _switchValue,
-              onChanged: (value) {
-                setState(() {
-                  _switchValue = value;
-                  print(_switchValue);
-                });
-              },
-              activeTrackColor: Colors.lightGreenAccent,
-              activeColor: Colors.green,
-            ),
-          )
-        ],
+                        color: Theme.of(context).primaryColor))),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _villageSelectorModalSheet(BuildContext context) async {
+    final myController = TextEditingController();
+    var villages = List<Village>();
+    List<String> villageNames = [];
+    List<Village> _searchResult = [];
+
+    await ApiCalls().getVillages().then((response) {
+      if (response.statusCode == 200) {
+        setState(() {
+          Iterable list = json.decode(response.body)['data'];
+          villages = list.map((model) => Village.fromJson(model)).toList();
+          for (Village village in villages) {
+            villageNames.add(village.name);
+          }
+        });
+      }
+    });
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.75,
+            color: Color(0xFF333333),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.only(
+                      topLeft: const Radius.circular(20),
+                      topRight: const Radius.circular(20))),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    child: TextField(
+                      controller: myController,
+                      decoration: InputDecoration(
+                        hintText: "Buscar un pueblo...",
+                        border: OutlineInputBorder(),
+                        suffixIcon: Icon(Icons.search),
+                      ),
+                      onChanged: (text) {
+                        _searchResult.clear();
+                        if (text.isEmpty) {
+                          setState(() {});
+                          return;
+                        }
+
+                        villages.forEach((v) {
+                          if (v.name.contains(text) || v.name.contains(text))
+                            _searchResult.add(v);
+                        });
+
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  Divider(thickness: 1),
+                  Expanded(
+                      child: _searchResult.length != 0 ||
+                              myController.text.isNotEmpty
+                          ? ListView.builder(
+                              itemCount: _searchResult.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                    leading: Image.network(
+                                      _searchResult[index].image != null
+                                          ? _searchResult[index].image
+                                          : "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
+                                      height: 50,
+                                      width: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    title: Text(_searchResult[index].name),
+                                    onTap: () async {
+                                      final userPrefs =
+                                          await SharedPreferences.getInstance();
+                                      userPrefs.setString('activeVillageName',
+                                          _searchResult[index].name);
+                                      userPrefs.setString('activeVillageId',
+                                          _searchResult[index].id);
+                                      userPrefs.setString('activeVillageImage',
+                                          _searchResult[index].image);
+                                      userPrefs.setString('activeVillageUrl',
+                                          _searchResult[index].nameUrl);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomeScreen()));
+                                    });
+                              })
+                          : ListView.builder(
+                              itemCount: villages.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                    leading: Image.network(
+                                      villages[index].image != null
+                                          ? villages[index].image
+                                          : "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
+                                      height: 50,
+                                      width: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    title: Text(villageNames[index]),
+                                    onTap: () async {
+                                      final userPrefs =
+                                          await SharedPreferences.getInstance();
+                                      userPrefs.setString('activeVillageName',
+                                          villages[index].name);
+                                      userPrefs.setString('activeVillageId',
+                                          villages[index].id);
+                                      userPrefs.setString('activeVillageImage',
+                                          villages[index].image);
+                                      userPrefs.setString('activeVillageUrl',
+                                          villages[index].nameUrl);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomeScreen()));
+                                    });
+                              }))
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

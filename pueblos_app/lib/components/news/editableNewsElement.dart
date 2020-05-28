@@ -256,6 +256,5 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
     });
     print(res);
     return true;
-    
   }
 }

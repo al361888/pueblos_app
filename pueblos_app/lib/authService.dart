@@ -10,13 +10,13 @@ import 'model/user.dart';
 
 class AuthService {
   // Login
-  Future<bool> login(String user, String pass) async {
+  Future<bool> login(String userEmail, String pass) async {
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
     String password = stringToBase64.encode(pass);
 
     var uriResponse = await http.post(
         'https://vueltalpueblo.wisclic.es/api/loginc',
-        body: {'user': user, 'pass': password});
+        body: {'user': userEmail, 'pass': password});
 
     if (uriResponse.statusCode == 200) {
       print(uriResponse.body.toString());
@@ -34,7 +34,6 @@ class AuthService {
       userPrefs.setString('userName', name);
       userPrefs.setString('email', email);
       userPrefs.setString('token', user.token);
-      print(user.managedVillages);
       userPrefs.setString('managedVillages', json.encode(user.managedVillages));
 
       //Store username and password locally
@@ -50,6 +49,43 @@ class AuthService {
     } else {
       print(uriResponse.statusCode);
       print("No existe ese usuario");
+      return false;
+    }
+  }
+
+  //Register
+  Future<bool> register(String name, String email, String userName, String phone, String password, String birthDate) async {
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    String pass = stringToBase64.encode(password);
+
+    var uriResponse = await http.post(
+        'https://vueltalpueblo.wisclic.es/api/sign-up',
+        body: {'name': name, 'email':email , 'username': userName, 'phone': phone, 'password': pass, 'birthDate': birthDate});
+
+    print(uriResponse.body.toString());
+    if (uriResponse.statusCode == 200) {
+      print(uriResponse.body.toString());
+
+      login(email, password);
+
+      // final userPrefs = await SharedPreferences.getInstance();
+      // var convertToData = json.decode(uriResponse.body);
+      // var user = User.fromJson(convertToData);
+
+      // userPrefs.setString('userName', name);
+      // userPrefs.setString('email', email);
+      // userPrefs.setString('token', user.token);
+      // userPrefs.setString('managedVillages', json.encode(user.managedVillages));
+
+      // //Store username and password locally
+      // final storage = new FlutterSecureStorage();
+      // await storage.write(key: 'email', value: email);
+      // await storage.write(key: 'username', value: name);
+      // await storage.write(key: 'password', value: password);
+
+      return true;
+    }else{
+      print(uriResponse.statusCode);
       return false;
     }
   }

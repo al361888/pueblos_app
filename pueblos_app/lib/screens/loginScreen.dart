@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginUserData {
-  String username = "";
+  String email = "";
   String pass = "";
 }
 
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     AuthService authService = AuthService();
     final userPrefs = await SharedPreferences.getInstance();
     String activeVillageName = userPrefs.getString('activeVillageName');
-    await authService.login(_userData.username, _userData.pass).then((result) {
+    await authService.login(_userData.email, _userData.pass).then((result) {
       _logged = result;
     });
     if (_logged) {
@@ -108,13 +108,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderSide: BorderSide(
                                   color: Colors.white70,
                                 )),
-                                icon: Icon(Icons.perm_identity),
-                                hintText: "Nombre de usuario",
+                                icon: Icon(Icons.email),
+                                hintText: "Correo electrónico",
                                 hintStyle: TextStyle(
                                     color: Colors.white70, fontSize: 18)),
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.emailAddress,
                             onChanged: (String value) {
-                              this._userData.username = value;
+                              this._userData.email = value;
                             },
                             validator: (value) {
                               if (value.isEmpty) {

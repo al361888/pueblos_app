@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/homeScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../authService.dart';
 import '../dbService.dart';
@@ -10,11 +11,13 @@ class AddProclamationScreen extends StatefulWidget {
 }
 
 class _AddProclamationScreenState extends State<AddProclamationScreen> {
+  
   @override
   void initState() {
     super.initState();
     AuthService().refreshToken();
   }
+  
   
   @override
   Widget build(BuildContext context) {
@@ -53,6 +56,20 @@ class NewProclamationFormState extends State<NewProclamationForm> {
   final _formKey = GlobalKey<FormState>();
   _ProclamationData _data = _ProclamationData();
   String dropDownValue = "General";
+  String villageId;
+
+  @override
+  void initState() {
+    super.initState();
+    _getVillageId();
+  }
+
+  _getVillageId() async{
+    final userPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      villageId = userPrefs.getString('activeVillageId');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +153,7 @@ class NewProclamationFormState extends State<NewProclamationForm> {
                   // Validate returns true if the form is valid, otherwise false.
                   if (_formKey.currentState.validate()) {
                     firebaseAdd(this._data.title, this._data.description,
-                        this._data.community);
+                        this._data.community, villageId);
                   }
                 },
                 child: Text(
@@ -153,8 +170,8 @@ class NewProclamationFormState extends State<NewProclamationForm> {
         ));
   }
 
-  void firebaseAdd(String title, String description, String community) {
-    var db = DBService("NvPUvkMOvGFqajAp86i9");
+  void firebaseAdd(String title, String description, String community, String villageId) {
+    var db = DBService(villageId);
     var ret = db.addProclamation(title, description, community);
     if (ret == null) {
       //No se ha creado el bando

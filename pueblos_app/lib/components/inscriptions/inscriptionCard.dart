@@ -2,6 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/inscriptions/specificInscriptionScreen.dart';
 
 class InscriptionCard extends StatefulWidget {
+  String username;
+  String image;
+  String quantity;
+  String eventWid;
+  String eventDate;
+  String extraData;
+  var inscriptionFields;
+  var participants;
+
+  InscriptionCard(
+      String name,
+      String image,
+      String quantity,
+      String eventWid,
+      String eventDate,
+      String extraData,
+      var inscriptionFields,
+      var participants) {
+    this.username = name;
+    this.image = image;
+    this.quantity = quantity;
+    this.eventWid = eventWid;
+    this.eventDate = eventDate;
+    this.extraData = extraData;
+    this.inscriptionFields = inscriptionFields;
+    this.participants = participants;
+  }
+
   @override
   State<StatefulWidget> createState() => _InscriptionCardState();
 }
@@ -9,6 +37,12 @@ class InscriptionCard extends StatefulWidget {
 class _InscriptionCardState extends State<InscriptionCard> {
   @override
   Widget build(BuildContext context) {
+    String image = widget.image;
+    if (image == null) {
+      image = "https://eu.ui-avatars.com/api/?name=" + widget.username;
+    } else {
+      image = "https://vueltalpueblo.wisclic.es/files/" + image;
+    }
     return Container(
       child: Card(
         elevation: 3,
@@ -23,9 +57,7 @@ class _InscriptionCardState extends State<InscriptionCard> {
                     decoration: new BoxDecoration(
                         shape: BoxShape.circle,
                         image: new DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new NetworkImage(
-                                "https://i.imgur.com/BoN9kdC.png")))),
+                            fit: BoxFit.fill, image: new NetworkImage(image)))),
                 Padding(padding: EdgeInsets.only(left: 20)),
                 Expanded(
                   child: Column(
@@ -33,21 +65,21 @@ class _InscriptionCardState extends State<InscriptionCard> {
                     children: <Widget>[
                       Container(
                         child: Text(
-                          "Carl Johnson",
+                          widget.username,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ),
                       Container(
                         child: Text(
-                          "Carl Johnson",
+                          widget.username,
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
                       Padding(padding: EdgeInsets.only(top: 10)),
                       Container(
                         child: Text(
-                          "21 de enero 2020",
+                          widget.eventDate,
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
@@ -57,7 +89,7 @@ class _InscriptionCardState extends State<InscriptionCard> {
                 Chip(
                   backgroundColor: Color(0xFFDAE1F5),
                   label: Text(
-                    '1',
+                    widget.quantity,
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Color(0xFF4E67AA)),
                   ),
@@ -65,9 +97,19 @@ class _InscriptionCardState extends State<InscriptionCard> {
               ],
             ),
           ),
-          onTap: (){
-            Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SpecificInscriptionScreen()));
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SpecificInscriptionScreen(
+                        widget.username,
+                        widget.image,
+                        widget.quantity,
+                        widget.eventWid,
+                        widget.eventDate,
+                        widget.extraData,
+                        widget.inscriptionFields,
+                        widget.participants)));
           },
         ),
       ),

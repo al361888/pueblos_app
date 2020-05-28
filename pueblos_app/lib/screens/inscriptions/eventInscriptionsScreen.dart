@@ -5,6 +5,12 @@ import 'package:pueblos_app/components/inscriptions/inscriptionsContainer.dart';
 
 
 class EventInscriptionsScreen extends StatefulWidget {
+  String eventWid;
+
+  EventInscriptionsScreen(String eventWid){
+    this.eventWid = eventWid;
+  }
+
   @override
   State<StatefulWidget> createState() => _EventInscriptionsScreenState();
 }
@@ -22,7 +28,7 @@ class _EventInscriptionsScreenState extends State<EventInscriptionsScreen> {
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: Container(
         padding: EdgeInsets.all(20),
-        child: InscriptionsContainer(),
+        child: InscriptionsContainer(widget.eventWid),
       ),
     );
   }
