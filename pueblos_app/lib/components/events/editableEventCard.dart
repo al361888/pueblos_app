@@ -220,7 +220,7 @@ class _EditableEventCardState extends State<EditableEventCard> {
                         Scaffold.of(context).showSnackBar(
                             SnackBar(content: Text("Evento ocultado")));
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/ConfigEvents', (Route<dynamic> route) => false);
+                            '/HomeScreen', (Route<dynamic> route) => false);
                       } else {
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text("Error al ocultar el evento")));

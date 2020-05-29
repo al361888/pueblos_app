@@ -11,6 +11,7 @@ import 'package:pueblos_app/screens/addProclamationScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../apiCalls.dart';
+import '../messageHandler.dart';
 import '../pueblos_icons.dart';
 import 'events/configEventsScreen.dart';
 import 'inscriptions/myInscriptionsScreen.dart';
@@ -43,11 +44,18 @@ class _HomeScreen extends State<HomeScreen> {
     setState(() {
       _user = (userPrefs.getString('userName') ?? 'Sesión no iniciada');
       _email = (userPrefs.getString('email') ?? 'No email');
-
       _activeVillageName = userPrefs.getString('activeVillageName');
       activeVillageImage = userPrefs.getString('activeVillageImage');
-      
     });
+    var subscribedVillages =
+        jsonDecode(userPrefs.getString('subscribedVillages'));
+    for (var s in subscribedVillages) {
+      if (s['wid'] == _activeVillageName) {
+        setState(() {
+          notificationSwitch = true;
+        });
+      }
+    }
     AuthService().refreshToken();
   }
 
@@ -254,9 +262,11 @@ class SettingVillageModalBottom extends StatefulWidget {
 
 class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
   bool _switchValue;
-  String activeVillage;
+  String activeVillageWid;
+  String activeVillageName;
   String activeVillageImage;
   String activeVillageImageUrl;
+  String token;
 
   @override
   initState() {
@@ -272,10 +282,13 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
   _getVillages() async {
     SharedPreferences userPrefs = await SharedPreferences.getInstance();
     setState(() {
-      activeVillage = (userPrefs.getString('activeVillageName'));
+      activeVillageName = (userPrefs.getString('activeVillageName'));
       activeVillageImage = (userPrefs.getString('activeVillageImage'));
+      activeVillageWid = userPrefs.getString('activeVillageId');
+      token = userPrefs.getString('token');
       if (activeVillageImage != null) {
-        activeVillageImageUrl = "http://vueltalpueblo.es/files/"+ activeVillageImage;
+        activeVillageImageUrl =
+            "http://vueltalpueblo.es/files/" + activeVillageImage;
       }
     });
   }
@@ -286,6 +299,8 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
       activeVillageImage =
           "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80";
     }
+
+    print(activeVillageImageUrl);
     //lA IMAGEN NO VA, DE MOMENTO CARGA UNA POR DEFECTO
     return Container(
       height: MediaQuery.of(context).size.height * 0.35,
@@ -304,14 +319,14 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
                 child: Row(
                   children: <Widget>[
                     Image.network(
-                      "https://lh3.googleusercontent.com/proxy/9LmT_UV-yynPSUv28V9ikbLzZm5VhEWHjzXgiGkBTwlR85HXzAaA2gecdFreQ0lgFWnQbgmBzXHvGo__VRl95xZ-mIXEZNA",
+                      activeVillageImageUrl,
                       height: 50,
                       width: 50,
                       fit: BoxFit.cover,
                     ),
                     Padding(padding: EdgeInsets.only(left: 10)),
                     Text(
-                      activeVillage,
+                      activeVillageName,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 18,
@@ -333,7 +348,7 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
                 onChanged: (value) {
                   setState(() {
                     _switchValue = value;
-                    print(_switchValue);
+                    _suscribeToVillage(_switchValue, activeVillageWid, token);
                   });
                 },
                 activeTrackColor: Color(0xFF0EB768),
@@ -352,6 +367,24 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
         ),
       ),
     );
+  }
+
+  Future<void> _suscribeToVillage(
+      bool switchValue, String villageId, String token) async {
+    if (switchValue) {
+      await ApiCalls()
+          .subscribeToVillage(villageId, token)
+          .then((response) => print(response.body));
+      MessageHandler messageHandler = MessageHandler();
+      messageHandler.fcmSubscribe(villageId);
+
+    } else {
+      await ApiCalls()
+          .unsubsbcribeToVillage(villageId, token)
+          .then((response) => print(response.body));
+      MessageHandler messageHandler = MessageHandler();
+      messageHandler.fcmUnSubscribe(villageId);
+    }
   }
 
   Future<void> _villageSelectorModalSheet(BuildContext context) async {
@@ -438,11 +471,8 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
                                           _searchResult[index].image);
                                       userPrefs.setString('activeVillageUrl',
                                           _searchResult[index].nameUrl);
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          "/HomeScreen", (route) => false);
                                     });
                               })
                           : ListView.builder(
@@ -469,11 +499,8 @@ class _SettingVillageModalBottom extends State<SettingVillageModalBottom> {
                                           villages[index].image);
                                       userPrefs.setString('activeVillageUrl',
                                           villages[index].nameUrl);
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          "/HomeScreen", (route) => false);
                                     });
                               }))
                 ],

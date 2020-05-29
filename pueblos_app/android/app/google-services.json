@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "751888315005",
-    "firebase_url": "https://pueblosapp.firebaseio.com",
-    "project_id": "pueblosapp",
-    "storage_bucket": "pueblosapp.appspot.com"
+    "project_number": "982709829216",
+    "firebase_url": "https://vueltalpueblo.firebaseio.com",
+    "project_id": "vueltalpueblo",
+    "storage_bucket": "vueltalpueblo.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:751888315005:android:9048a616af3f365f773714",
+        "mobilesdk_app_id": "1:982709829216:android:f144fcd9c5599001f9cd05",
         "android_client_info": {
           "package_name": "com.example.pueblos_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "751888315005-asprefcbroednhtec4dmgfck0m08blv3.apps.googleusercontent.com",
+          "client_id": "982709829216-d5qnu4k647qqngandbvsjcr9u4qkooop.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD-tkzJikMFbwpMDpsacQTHSuFXxsLGA3M"
+          "current_key": "AIzaSyA57QGHZjbuGoliEgiYfTP7zZEIxRNWVTo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "751888315005-asprefcbroednhtec4dmgfck0m08blv3.apps.googleusercontent.com",
+              "client_id": "982709829216-d5qnu4k647qqngandbvsjcr9u4qkooop.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pueblos_app/model/inscription.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:pueblos_app/screens/inscriptions/specificInscriptionScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../apiCalls.dart';
@@ -24,14 +25,15 @@ class InscriptionsContainer extends StatefulWidget {
 class _InscriptionsContainerState extends State<InscriptionsContainer> {
   final myController = TextEditingController();
   var inscriptions = List<Inscription>();
-  ScanResult _barcode;
+  var codesMap = Map<String, String>();
+  
 
   // String inscriptionsNum = inscriptions.length;
   bool isLoading = true;
   String token;
   String activeVillageWid;
 
-  String totalAsistants = "--";
+  int totalAsistants = 0;
   String inscriptionsNum;
 
   @override
@@ -49,7 +51,6 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
     ApiCalls()
         .getEventInscriptions(activeVillageWid, widget.eventWid, token)
         .then((response) {
-      print(response.body);
       if (response.statusCode == 200) {
         setState(() {
           Iterable list = json.decode(response.body)['data'];
@@ -57,6 +58,22 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
               list.map((model) => Inscription.fromJson(model)).toList();
           inscriptionsNum = inscriptions.length.toString();
         });
+
+        for (var inscription in inscriptions) {
+          setState(() {
+            totalAsistants+=int.parse(inscription.quantity);
+          });
+          for (int i = 0; i < int.parse(inscription.quantity); i++) {
+            if (inscription.participants[i]['code'] != null) {
+              print(inscription.participants[i]['code']);
+              setState(() {
+                codesMap.putIfAbsent(
+                    inscription.participants[i]['code'], () => inscription.wid);
+              });
+            }
+          }
+        }
+
         isLoading = false;
       } else {
         _getAsistants();
@@ -66,10 +83,6 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    _barcode != null
-        ? Scaffold.of(context)
-            .showSnackBar(SnackBar(content: Text(_barcode.rawContent)))
-        : print("No hay codigo");
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : Container(
@@ -158,7 +171,7 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
                           children: <Widget>[
                             Container(
                               child: Text(
-                                totalAsistants,
+                                totalAsistants.toString(),
                                 style: TextStyle(
                                     color: Color(0xFF4E67AA),
                                     fontSize: 32,
@@ -184,6 +197,7 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
                         itemCount: inscriptions.length,
                         itemBuilder: (context, index) {
                           return InscriptionCard(
+                              inscriptions[index].wid,
                               inscriptions[index].userName,
                               inscriptions[index].userImage,
                               inscriptions[index].quantity,
@@ -198,16 +212,35 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
           );
   }
 
-  String search(String s) {
-    print(s);
-    return s;
+  void search(String s) {
+    if (codesMap.containsKey(s)) {
+      for (var inscription in inscriptions) {
+        if (inscription.wid == codesMap[s]) {
+          Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SpecificInscriptionScreen(
+                        inscription.wid,
+                        inscription.userName,
+                        inscription.image,
+                        inscription.quantity,
+                        inscription.eventWid,
+                        inscription.eventDate,
+                        inscription.extraData,
+                        inscription.inscriptionFields,
+                        inscription.participants)));
+        }
+      }
+    } else {
+      Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text("No existe ningún código con ese valor.")));
+    }
   }
 
   Future scan() async {
     try {
       var result = await BarcodeScanner.scan();
-
-      setState(() => this._barcode = result);
+      search(result.rawContent);
     } on PlatformException catch (e) {
       var result = ScanResult(
         type: ResultType.Error,
@@ -221,9 +254,6 @@ class _InscriptionsContainerState extends State<InscriptionsContainer> {
       } else {
         result.rawContent = 'Unknown error: $e';
       }
-      setState(() {
-        this._barcode = result;
-      });
     }
   }
 }

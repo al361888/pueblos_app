@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
@@ -118,5 +119,23 @@ class ApiCalls {
   Future getEventInscriptions(String villageWid, String eventWid, String token){
     var url = this.baseUrl + "/api/"+ villageWid + "/events/"+ eventWid+ "/inscriptions";
     return http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+  }
+
+  //Confirmar asistencia
+  Future confirmParticipant(String villageWid, String eventWid, String participantWid, String isUsed, String token){
+    var url = this.baseUrl + "/api/"+ villageWid + "/events/"+ eventWid+ "/inscriptions/" + participantWid;
+    return http.put(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token}, body: <String, String>{
+          "isUsed": isUsed,
+        });
+  }
+
+  Future subscribeToVillage(String villageWid, String token){
+    var url = this.baseUrl+ "/api/"+ villageWid + "/subscribe";
+    return http.post(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+  }
+  
+  Future unsubsbcribeToVillage(String villageWid, String token){
+    var url = this.baseUrl+ "/api/"+ villageWid + "/unsubscribe";
+    return http.delete(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
   }
 }

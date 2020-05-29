@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pueblos_app/screens/inscriptions/specificInscriptionScreen.dart';
 
 class InscriptionCard extends StatefulWidget {
+  String wid;
   String username;
   String image;
   String quantity;
@@ -12,6 +13,7 @@ class InscriptionCard extends StatefulWidget {
   var participants;
 
   InscriptionCard(
+      String wid,
       String name,
       String image,
       String quantity,
@@ -20,6 +22,7 @@ class InscriptionCard extends StatefulWidget {
       String extraData,
       var inscriptionFields,
       var participants) {
+    this.wid = wid;
     this.username = name;
     this.image = image;
     this.quantity = quantity;
@@ -102,6 +105,7 @@ class _InscriptionCardState extends State<InscriptionCard> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => SpecificInscriptionScreen(
+                        widget.wid,
                         widget.username,
                         widget.image,
                         widget.quantity,

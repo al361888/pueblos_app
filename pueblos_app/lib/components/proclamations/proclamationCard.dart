@@ -45,8 +45,11 @@ class _ProclamationCardState extends State<ProclamationCard> {
   Widget build(BuildContext context) {
     String title = widget.title;
     String description = widget.description;
+    String imageUrl;
     if(villageImage ==null){
-      villageImage = "https://lh3.googleusercontent.com/proxy/9LmT_UV-yynPSUv28V9ikbLzZm5VhEWHjzXgiGkBTwlR85HXzAaA2gecdFreQ0lgFWnQbgmBzXHvGo__VRl95xZ-mIXEZNA";
+      imageUrl = "https://lh3.googleusercontent.com/proxy/9LmT_UV-yynPSUv28V9ikbLzZm5VhEWHjzXgiGkBTwlR85HXzAaA2gecdFreQ0lgFWnQbgmBzXHvGo__VRl95xZ-mIXEZNA";
+    }else{
+       imageUrl = "https://vueltalpueblo.wisclic.es/files/"+villageImage;
     }
 
     return Container(
@@ -62,7 +65,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Column(children: <Widget>[
-                    Image.network(villageImage,
+                    Image.network(imageUrl,
                         width: 60, height: 60),
                     Padding(padding: EdgeInsets.all(10.0)),
                     Text(
@@ -99,7 +102,7 @@ class _ProclamationCardState extends State<ProclamationCard> {
                 Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(top: 15, left: 15, right: 15),
-                    child: Image.network(villageImage,
+                    child: Image.network(imageUrl,
                         width: 40, height: 40),
                   ),
                   Flexible(

@@ -6,15 +6,17 @@ class User{
   final String username;
   final managedVillages;
   final String token;
+  final subscribedVillages;
 
-  User({this.email, this.name, this.username, this.managedVillages, this.token});
+  User({this.email, this.name, this.username, this.managedVillages, this.token, this.subscribedVillages});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       email: json['data']['user']['email'],
       name: json["data"]['user']['name'],
       managedVillages: json["data"]['user']['managedVillages'],
-      token: json["data"]['token']
+      token: json["data"]['token'],
+      subscribedVillages: json["data"]['user']['subscribedVillages']
     );
   }
 
@@ -22,7 +24,8 @@ class User{
     'email': email,
     'name': name,
     'username': username,
-    'managedVillages': managedVillages
+    'managedVillages': managedVillages,
+    'subscribedVillages': subscribedVillages
   };
 
 }

@@ -35,15 +35,14 @@ class AuthService {
       userPrefs.setString('email', email);
       userPrefs.setString('token', user.token);
       userPrefs.setString('managedVillages', json.encode(user.managedVillages));
+      userPrefs.setString('subscribedVillages', json.encode(user.subscribedVillages));
+
 
       //Store username and password locally
       final storage = new FlutterSecureStorage();
       await storage.write(key: 'email', value: email);
       await storage.write(key: 'username', value: name);
       await storage.write(key: 'password', value: pass);
-
-      // MessageHandler messageHandler = MessageHandler(); ====================================
-      // messageHandler.fcmSubscribe("VillanuevaDeViver"); ====================================
 
       return true;
     } else {

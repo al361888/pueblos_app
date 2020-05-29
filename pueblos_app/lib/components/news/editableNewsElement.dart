@@ -195,20 +195,22 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
                           ],
                           onSelected: (value) {
                             if (value == 1) {
-                              bool success = _hideNews(activeVillageWid,
+                              String success = _hideNews(activeVillageWid,
                                   widget.id, widget.active, token);
                               print(success);
-                              if (success) {
+                              setState(() {
+                                          widget.active = success;
+                                        });
+                              if (success == '1') {
                                 Scaffold.of(context).showSnackBar(SnackBar(
                                     content:
-                                        Text("Noticia ocultada")));
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    '/ConfigNews',
-                                    (Route<dynamic> route) => false);
+                                        Text("Noticia visible")));
+                                Navigator.pushNamedAndRemoveUntil(context, "/HomeScreen", (route) => false);
                               } else {
                                 Scaffold.of(context).showSnackBar(SnackBar(
                                     content:
-                                        Text("Error al ocultar la noticia")));
+                                        Text("Noticia ocultada")));
+                                        Navigator.pushNamedAndRemoveUntil(context, "/HomeScreen", (route) => false);
                               }
                             } else if (value == 2) {
                               Navigator.push(
@@ -237,16 +239,17 @@ class _EditableNewsElementState extends State<EditableNewsElement> {
     );
   }
 
-  bool _hideNews(
+  String _hideNews(
       String activeVillageWid, String id, String active, String token) {
-    bool res = false;
     ApiCalls()
         .hideNews(activeVillageWid, widget.id, widget.active, token)
         .then((result) {
-      res = result;
     });
-    print(res);
-    return true;
+    if(active=='0'){
+      return '1';
+    }else{
+      return '0';
+    }
   }
 
   bool _deleteNews(String activeVillageWid, String id, String token) {

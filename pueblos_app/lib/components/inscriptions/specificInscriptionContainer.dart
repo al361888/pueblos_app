@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:pueblos_app/apiCalls.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../authService.dart';
 
 class SpecificInscriptionContainer extends StatefulWidget {
+  String wid;
   String username;
   String image;
   String quantity;
@@ -17,6 +20,7 @@ class SpecificInscriptionContainer extends StatefulWidget {
   var participants;
 
   SpecificInscriptionContainer(
+      String wid,
       String name,
       String image,
       String quantity,
@@ -25,6 +29,7 @@ class SpecificInscriptionContainer extends StatefulWidget {
       String extraData,
       var inscriptionFields,
       var participants) {
+    this.wid = wid;
     this.username = name;
     this.image = image;
     this.quantity = quantity;
@@ -43,13 +48,17 @@ class Item {
     this.expandedValue,
     this.headerValue,
     this.isExpanded = false,
-    this.isConfirmed = false,
+    this.isConfirmed,
+    this.participantWid,
+    this.participantIndex
   });
 
   var expandedValue;
   String headerValue;
   bool isExpanded;
   bool isConfirmed;
+  String participantWid;
+  int participantIndex;
 }
 
 List<Item> generateItems(
@@ -58,12 +67,26 @@ List<Item> generateItems(
     var participant = participants[index];
     var partExtraData = participant['extraData'];
     var dataMap = json.decode(partExtraData);
+    var confirmed;
 
+    if (participant['isUsed'] == '1') {
+      confirmed = true;
+    } else {
+      confirmed = false;
+    }
+
+    print(participant['isUsed'] + "------------> "+ confirmed.toString());
     var list = List<Widget>();
     for (var i in specificFields) {
       String value;
       if (dataMap[i["name"]] == null) {
-        value = "NO";
+        value = "No";
+      } else if (dataMap[i["name"]] == "0") {
+        value = "No";
+      } else if (dataMap[i["name"]] == "1") {
+        value = "Sí";
+      } else if (dataMap[i["name"]] == "") {
+        value = "No";
       } else {
         value = dataMap[i["name"]];
       }
@@ -84,15 +107,16 @@ List<Item> generateItems(
       list.add(row);
     }
     return Item(
-      headerValue: participant['name'],
-      expandedValue: list,
-    );
+        headerValue: participant['name'],
+        expandedValue: list,
+        participantWid: participant['wid'],
+        isConfirmed: confirmed,
+        participantIndex: index);
   });
 }
 
 class _SpecificInscriptionContainerState
     extends State<SpecificInscriptionContainer> {
-  ScanResult _barcode;
   var _data;
   Map fields;
   var specificFields;
@@ -120,7 +144,6 @@ class _SpecificInscriptionContainerState
       image = "https://vueltalpueblo.wisclic.es/files/" + image;
     }
 
-    _barcode != null ? print(_barcode.rawContent) : print("No hay codigo");
     return SingleChildScrollView(
         child: Column(children: <Widget>[
       Container(
@@ -254,24 +277,25 @@ class _SpecificInscriptionContainerState
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: RaisedButton(
-                        color: Color(0xFFDF4674),
-                        child: Container(
-                            child: Text(
-                          "Confirmar asistencia",
-                          style: TextStyle(color: Colors.white),
-                        )),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0))),
-                        onPressed: () {
-                          setState(() {
-                            item.isConfirmed = !item.isConfirmed;
-                            item.isExpanded = false;
-                          });
-                        }),
-                  ),
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: RaisedButton(
+                          color: Color(0xFFDF4674),
+                          child: Container(
+                              child: Text(
+                            "Confirmar asistencia",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0))),
+                          onPressed: () {
+                            setState(() {
+                              item.isConfirmed = !item.isConfirmed;
+                              item.isExpanded = false;
+                            });
+                            confirm(item.participantWid, item.isConfirmed);
+                            item.isConfirmed?widget.participants[item.participantIndex]['isUsed']='1':widget.participants[item.participantIndex]['isUsed']='0';
+                          })),
                 ],
               ),
             ),
@@ -282,11 +306,23 @@ class _SpecificInscriptionContainerState
     );
   }
 
+  Future<void> confirm(String participantWid, bool isConfirmed) async {
+    SharedPreferences userPrefs = await SharedPreferences.getInstance();
+    String token = userPrefs.getString('token');
+    String activeVillageWid = userPrefs.getString('activeVillageId');
+    String isUsed;
+    if (isConfirmed) {
+      isUsed = '1';
+    } else {
+      isUsed = '0';
+    }
+    ApiCalls().confirmParticipant(
+        activeVillageWid, widget.eventWid, participantWid, isUsed, token).then((response) => print(response.body));
+  }
+
   Future scan() async {
     try {
       var result = await BarcodeScanner.scan();
-
-      setState(() => this._barcode = result);
     } on PlatformException catch (e) {
       var result = ScanResult(
         type: ResultType.Error,
@@ -300,9 +336,6 @@ class _SpecificInscriptionContainerState
       } else {
         result.rawContent = 'Unknown error: $e';
       }
-      setState(() {
-        this._barcode = result;
-      });
     }
   }
 }
